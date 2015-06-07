@@ -1,0 +1,58 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.gofudaproto.ClientFragment" >
+    <LinearLayout
+        android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical" 
+        >
+        <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#ffffffff"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/bt_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="menu" />
+
+        <Button
+            android:id="@+id/bt_requirement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="call" />
+
+        <Button
+            android:id="@+id/bt_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="review" />
+
+        <Button
+            android:id="@+id/bt_recipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="recipe" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="8"
+        android:orientation="vertical" />
+    </LinearLayout>
+    
+
+</FrameLayout>
