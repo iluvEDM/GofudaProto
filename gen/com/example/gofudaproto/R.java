@@ -551,6 +551,39 @@ theme attribute (in the form
 containing a value of this type.
          */
         public static final int elevation=0x7f01006b;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int exampleColor=0x7f0100ab;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int exampleDimension=0x7f0100aa;
+        /** <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+         */
+        public static final int exampleDrawable=0x7f0100ac;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int exampleString=0x7f0100a9;
         /**  The drawable to show in the button for expanding the activities overflow popup.
              <strong>Note:</strong> Clients would like to set this drawable
              as a clue about the action the chosen activity will perform. For
@@ -1648,12 +1681,13 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09002e;
         public static final int action_mode_bar_stub=0x7f09002d;
         public static final int action_mode_close_button=0x7f090020;
-        public static final int action_settings=0x7f090048;
+        public static final int action_settings=0x7f09004c;
         public static final int activity_chooser_view_content=0x7f090021;
         public static final int always=0x7f090014;
         public static final int beginning=0x7f09001b;
         public static final int bt_client_install=0x7f090047;
         public static final int bt_menu=0x7f090040;
+        public static final int bt_profile=0x7f090048;
         public static final int bt_recipe=0x7f090043;
         public static final int bt_requirement=0x7f090041;
         public static final int bt_review=0x7f090042;
@@ -1668,6 +1702,8 @@ containing a value of this type.
         public static final int dropdown=0x7f09001a;
         public static final int edit_query=0x7f090033;
         public static final int end=0x7f09001c;
+        public static final int event_calling=0x7f090049;
+        public static final int event_went=0x7f09004a;
         public static final int expand_activities_button=0x7f090022;
         public static final int expanded_menu=0x7f090028;
         public static final int home=0x7f090000;
@@ -1683,6 +1719,7 @@ containing a value of this type.
         public static final int never=0x7f090017;
         public static final int none=0x7f09000f;
         public static final int normal=0x7f09000b;
+        public static final int profile_describe=0x7f09004b;
         public static final int progress_circular=0x7f090007;
         public static final int progress_horizontal=0x7f090008;
         public static final int radio=0x7f09002b;
@@ -1759,11 +1796,14 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030015;
         public static final int abc_simple_dropdown_hint=0x7f030016;
         public static final int activity_main=0x7f030017;
-        public static final int fragment_client=0x7f030018;
-        public static final int fragment_intro=0x7f030019;
-        public static final int fragment_main=0x7f03001a;
-        public static final int fragment_truck=0x7f03001b;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001c;
+        public static final int call_thumbnail=0x7f030018;
+        public static final int fragment_client=0x7f030019;
+        public static final int fragment_intro=0x7f03001a;
+        public static final int fragment_main=0x7f03001b;
+        public static final int fragment_truck=0x7f03001c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001d;
+        public static final int truck_call=0x7f03001e;
+        public static final int truck_profile=0x7f03001f;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;
@@ -6114,6 +6154,82 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
           @attr name com.example.gofudaproto:titleTextAppearance
         */
         public static final int Toolbar_titleTextAppearance = 9;
+        /** Attributes that can be used with a TruckCallView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #TruckCallView_exampleColor com.example.gofudaproto:exampleColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #TruckCallView_exampleDimension com.example.gofudaproto:exampleDimension}</code></td><td></td></tr>
+           <tr><td><code>{@link #TruckCallView_exampleDrawable com.example.gofudaproto:exampleDrawable}</code></td><td></td></tr>
+           <tr><td><code>{@link #TruckCallView_exampleString com.example.gofudaproto:exampleString}</code></td><td></td></tr>
+           </table>
+           @see #TruckCallView_exampleColor
+           @see #TruckCallView_exampleDimension
+           @see #TruckCallView_exampleDrawable
+           @see #TruckCallView_exampleString
+         */
+        public static final int[] TruckCallView = {
+            0x7f0100a9, 0x7f0100aa, 0x7f0100ab, 0x7f0100ac
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.example.gofudaproto.R.attr#exampleColor}
+          attribute's value can be found in the {@link #TruckCallView} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.gofudaproto:exampleColor
+        */
+        public static final int TruckCallView_exampleColor = 2;
+        /**
+          <p>This symbol is the offset where the {@link com.example.gofudaproto.R.attr#exampleDimension}
+          attribute's value can be found in the {@link #TruckCallView} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.gofudaproto:exampleDimension
+        */
+        public static final int TruckCallView_exampleDimension = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.example.gofudaproto.R.attr#exampleDrawable}
+          attribute's value can be found in the {@link #TruckCallView} array.
+
+
+          <p>May be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+<p>May be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+          @attr name com.example.gofudaproto:exampleDrawable
+        */
+        public static final int TruckCallView_exampleDrawable = 3;
+        /**
+          <p>This symbol is the offset where the {@link com.example.gofudaproto.R.attr#exampleString}
+          attribute's value can be found in the {@link #TruckCallView} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.example.gofudaproto:exampleString
+        */
+        public static final int TruckCallView_exampleString = 0;
         /** Attributes that can be used with a View.
            <p>Includes the following attributes:</p>
            <table>

@@ -18,11 +18,11 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/bt_menu"
+            android:id="@+id/bt_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="menu" />
+            android:text="profile" />
 
         <Button
             android:id="@+id/bt_requirement"

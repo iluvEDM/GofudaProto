@@ -16,6 +16,7 @@ public class MainActivity extends ActionBarActivity {
 	private Fragment mStartFragment;
 	private Fragment mIntroFragment;
 	Boolean mIsHaveToBackFragment = false;
+	Boolean mIsHaveToStartFragment = false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,6 +63,10 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 			.replace(R.id.container, mPrevFragment).commit();
 			mIsHaveToBackFragment = false;
+		}else if(mIsHaveToStartFragment){
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.container, mStartFragment).commit();
+			mIsHaveToStartFragment = false;
 		}else{
 			// TODO Auto-generated method stub
 			super.onBackPressed();
