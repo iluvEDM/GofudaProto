@@ -5,18 +5,15 @@
     tools:context="com.example.gofudaproto.TruckFragment" >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/profile_describe"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical|center_horizontal"
-            android:textAlignment="center"
-            android:text="This is Profile" 
-            />
+            android:layout_height="1dp"
+            android:layout_weight="5"
+            android:orientation="vertical" >
+			<ScrollView
+                android:id="@+id/event_calls"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" />
     </LinearLayout>
     
 </FrameLayout>

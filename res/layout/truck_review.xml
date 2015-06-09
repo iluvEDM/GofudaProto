@@ -9,14 +9,49 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/profile_describe"
+        <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical|center_horizontal"
-            android:textAlignment="center"
-            android:text="This is Profile" 
-            />
+            android:layout_height="1dp"
+           	android:layout_weight="1"
+           	android:gravity="center_vertical|center_horizontal"
+            android:orientation="horizontal" >
+	
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="profile" 
+                />
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="review" 
+                />
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="history" 
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_weight="5"
+            android:orientation="vertical" >
+			<ScrollView
+                android:id="@+id/event_calls"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </LinearLayout>
+
     </LinearLayout>
     
 </FrameLayout>
