@@ -27,8 +27,7 @@ public class TruckCallView{
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
 		mBackgroundView = inflater.inflate(R.layout.truck_call , null ,false);
 		mBackgroundView.setLayoutParams(new LayoutParams(parentView.getWidth(), parentView.getHeight()));
-		mCallingEventView = (ScrollView)mParentActivity.findViewById(R.id.event_calling);
-		mWentEventView = (ScrollView)mParentActivity.findViewById(R.id.event_went);
+		mWentEventView = (ScrollView)mParentActivity.findViewById(R.id.event_calls);
 		mCallArray = new ArrayList<CallPaper>();
 		mCallThumbnailArray = new ArrayList<View>();
 		

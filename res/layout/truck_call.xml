@@ -13,23 +13,34 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
-           	android:layout_weight="5"
-            android:orientation="vertical" >
-
-            <ScrollView
-                android:id="@+id/event_calling"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" />
+           	android:layout_weight="2"
+           	android:gravity="center_vertical|center_horizontal"
+            android:orientation="horizontal" >
+	
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="time" 
+                />
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="location" 
+                />
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="people" 
+                />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_weight="4"
+            android:layout_weight="5"
             android:orientation="vertical" >
 			<ScrollView
-                android:id="@+id/event_went"
+                android:id="@+id/event_calls"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical" />

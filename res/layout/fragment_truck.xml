@@ -18,18 +18,18 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/bt_profile"
+            android:id="@+id/bt_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="profile" />
+            android:text="calls" />
 
         <Button
-            android:id="@+id/bt_requirement"
+            android:id="@+id/bt_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="call" />
+            android:text="come" />
 
         <Button
             android:id="@+id/bt_review"
