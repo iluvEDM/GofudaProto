@@ -46,8 +46,8 @@
             android:text="recipe" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_fragment"
+    <FrameLayout
+        android:id="@+id/call_contain"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_weight="8"

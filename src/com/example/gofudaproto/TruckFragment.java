@@ -29,10 +29,11 @@ public class TruckFragment extends Fragment implements OnClickListener{
 	private String mParam2;
 	private MainActivity mParentActivity;
 	private OnFragmentInteractionListener mListener;
-	private Button mMainButton;
 	private Button mCallButton;
+	private Button mConfirmButton;
 	private Button mReviewButton;
 	private Button mRecipeButton;
+	private TruckCallFragment mCallFragment;
 
 	/**
 	 * Use this factory method to create a new instance of this fragment using
@@ -80,14 +81,19 @@ public class TruckFragment extends Fragment implements OnClickListener{
 		super.onActivityCreated(savedInstanceState);
 		mParentActivity = (MainActivity)getActivity();
 		mParentActivity.setHaveToBack(true);
-		mMainButton = (Button)mParentActivity.findViewById(R.id.bt_menu);
-		mMainButton.setOnClickListener(this);
-		mCallButton = (Button)mParentActivity.findViewById(R.id.bt_requirement);
+		mCallButton = (Button)mParentActivity.findViewById(R.id.bt_call);
 		mCallButton.setOnClickListener(this);
+		mConfirmButton = (Button)mParentActivity.findViewById(R.id.bt_confirm);
+		mConfirmButton.setOnClickListener(this);
 		mReviewButton = (Button)mParentActivity.findViewById(R.id.bt_review);
 		mReviewButton.setOnClickListener(this);
 		mRecipeButton = (Button)mParentActivity.findViewById(R.id.bt_recipe);
 		mRecipeButton.setOnClickListener(this);
+		
+		mCallFragment = new TruckCallFragment();
+		
+		mParentActivity.getSupportFragmentManager().beginTransaction()
+		.replace(R.id.call_contain, mCallFragment).commit();
 	}
 
 	// TODO: Rename method, update argument and hook method into UI event
@@ -132,9 +138,11 @@ public class TruckFragment extends Fragment implements OnClickListener{
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch(v.getId()){
-		case R.id.bt_menu:
+		case R.id.bt_call:
+			mParentActivity.getSupportFragmentManager().beginTransaction()
+			.replace(R.id.call_contain, mCallFragment).commit();
 			break;
-		case R.id.bt_requirement:
+		case R.id.bt_confirm:
 			break;
 		case R.id.bt_review:
 			break;

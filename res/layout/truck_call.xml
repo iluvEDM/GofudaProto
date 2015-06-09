@@ -18,16 +18,19 @@
             android:orientation="horizontal" >
 	
             <Button
+                android:id = "@+id/call_time"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:text="time" 
                 />
             <Button
+                android:id = "@+id/call_location"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:text="location" 
                 />
             <Button
+                android:id = "@+id/call_people"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:text="people" 
@@ -35,6 +38,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/event_linear"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_weight="5"
