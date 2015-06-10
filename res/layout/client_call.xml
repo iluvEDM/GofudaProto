@@ -18,22 +18,22 @@
             android:orientation="horizontal" >
 	
             <Button
-                android:id = "@+id/callmenu_rice"
+                android:id = "@+id/call_time"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="Rice" 
+                android:text="time" 
                 />
             <Button
-                android:id = "@+id/callmenu_beverage"
+                android:id = "@+id/call_location"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="Beverage" 
+                android:text="location" 
                 />
             <Button
-                android:id = "@+id/callmenu_desert"
+                android:id = "@+id/call_people"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="Desert" 
+                android:text="people" 
                 />
         </LinearLayout>
 
