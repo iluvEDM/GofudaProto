@@ -3,22 +3,21 @@ package com.example.gofudaproto;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass. Activities that contain this fragment
- * must implement the {@link TruckFragment.OnFragmentInteractionListener}
+ * must implement the {@link TruckConfirmFragment.OnFragmentInteractionListener}
  * interface to handle interaction events. Use the
- * {@link TruckFragment#newInstance} factory method to create an instance of
- * this fragment.
+ * {@link TruckConfirmFragment#newInstance} factory method to create an instance
+ * of this fragment.
  *
  */
-public class TruckFragment extends Fragment implements OnClickListener{
+public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
@@ -27,14 +26,8 @@ public class TruckFragment extends Fragment implements OnClickListener{
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 	private String mParam2;
-	private MainActivity mParentActivity;
+
 	private OnFragmentInteractionListener mListener;
-	private Button mCallButton;
-	private Button mConfirmButton;
-	private Button mReviewButton;
-	private Button mRecipeButton;
-	private TruckCallFragment mCallFragment;
-	private TruckConfirmFragment mConfirmFragment;
 
 	/**
 	 * Use this factory method to create a new instance of this fragment using
@@ -44,11 +37,11 @@ public class TruckFragment extends Fragment implements OnClickListener{
 	 *            Parameter 1.
 	 * @param param2
 	 *            Parameter 2.
-	 * @return A new instance of fragment TruckFragment.
+	 * @return A new instance of fragment TruckConfirmFragment.
 	 */
 	// TODO: Rename and change types and number of parameters
-	public static TruckFragment newInstance(String param1, String param2) {
-		TruckFragment fragment = new TruckFragment();
+	public static TruckConfirmFragment newInstance(String param1, String param2) {
+		TruckConfirmFragment fragment = new TruckConfirmFragment();
 		Bundle args = new Bundle();
 		args.putString(ARG_PARAM1, param1);
 		args.putString(ARG_PARAM2, param2);
@@ -56,7 +49,7 @@ public class TruckFragment extends Fragment implements OnClickListener{
 		return fragment;
 	}
 
-	public TruckFragment() {
+	public TruckConfirmFragment() {
 		// Required empty public constructor
 	}
 
@@ -72,36 +65,14 @@ public class TruckFragment extends Fragment implements OnClickListener{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_truck, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onActivityCreated(savedInstanceState);
-		mParentActivity = (MainActivity)getActivity();
-		mParentActivity.setHaveToBack(true);
-		mCallButton = (Button)mParentActivity.findViewById(R.id.bt_call);
-		mCallButton.setOnClickListener(this);
-		mConfirmButton = (Button)mParentActivity.findViewById(R.id.bt_confirm);
-		mConfirmButton.setOnClickListener(this);
-		mReviewButton = (Button)mParentActivity.findViewById(R.id.bt_review);
-		mReviewButton.setOnClickListener(this);
-		mRecipeButton = (Button)mParentActivity.findViewById(R.id.bt_recipe);
-		mRecipeButton.setOnClickListener(this);
-		
-		mCallFragment = new TruckCallFragment();
-		mConfirmFragment = new TruckConfirmFragment();
-		mParentActivity.getSupportFragmentManager().beginTransaction()
-		.replace(R.id.call_contain, mCallFragment).commit();
+		return inflater.inflate(R.layout.truck_call_detail, container, false);
 	}
 
 	// TODO: Rename method, update argument and hook method into UI event
 	public void onButtonPressed(Uri uri) {
-//		if (mListener != null) {
-//			mListener.onFragmentInteraction(uri);
-//		}
+		if (mListener != null) {
+			mListener.onFragmentInteraction(uri);
+		}
 	}
 
 	@Override
@@ -133,27 +104,6 @@ public class TruckFragment extends Fragment implements OnClickListener{
 	public interface OnFragmentInteractionListener {
 		// TODO: Update argument type and name
 		public void onFragmentInteraction(Uri uri);
-	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch(v.getId()){
-		case R.id.bt_call:
-			mParentActivity.getSupportFragmentManager().beginTransaction()
-			.replace(R.id.call_contain, mCallFragment).commit();
-			break;
-		case R.id.bt_confirm:
-			mParentActivity.getSupportFragmentManager().beginTransaction()
-			.replace(R.id.call_contain, mConfirmFragment).commit();
-			break;
-		case R.id.bt_review:
-			break;
-		case R.id.bt_recipe:
-			break;
-		
-		}
-		
 	}
 
 }

@@ -3,15 +3,292 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.gofudaproto.TruckFragment" >
-    <LinearLayout
+
+    <ScrollView
+        android:id="@+id/event_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
-        <ScrollView
-            android:id="@+id/event_details"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" />
-    </LinearLayout>
+            android:orientation="vertical" >
+			<!--행사명   -->
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="event name : "
+                    android:textSize="10pt" />
+
+                <TextView
+                    android:id="@+id/call_event_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" event "
+                    android:textSize="10pt" />
+            </LinearLayout>
+			<!-- 인원  -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="people : "
+                    android:textSize="10pt" />
+
+                <TextView
+                    android:id="@+id/call_people_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" who "
+                    android:textSize="10pt" />
+            </LinearLayout>
+
+      	   <!-- 요청 종류  -->   
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+                <LinearLayout
+  					android:layout_width="1dp"
+  					android:layout_height="wrap_content"
+  					android:layout_weight="1"
+  					android:orientation="vertical">
+  					
+                    <TextView
+                    android:id="@+id/called_truck"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="call truck"
+                    android:textSize="10pt" />
+                    
+                </LinearLayout>
+                
+                <LinearLayout
+  					android:layout_width="1dp"
+  					android:layout_height="wrap_content"
+  					android:layout_weight="1"
+  					android:orientation="vertical">
+                    
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <Button 
+                            android:id="@+id/call_button_dining"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:text="dining"
+                            />
+                        <Button 
+                            android:id="@+id/call_number_dining"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:text="1"
+                            />
+                        
+                    </LinearLayout>
+                    
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <Button 
+                            android:id="@+id/call_button_desert"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:text="desert"
+                            />
+                        <Button 
+                            android:id="@+id/call_number_desert"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:text="1"
+                            />
+                        
+                    </LinearLayout>
+                    
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <Button 
+                            android:id="@+id/call_button_beverage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:text="beverage"
+                            />
+                        <Button 
+                            android:id="@+id/call_number_beverage"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:text="1"
+                            />
+                        
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <!-- 예상 이용시 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="estimated time : "
+                    android:textSize="10pt" />
+
+                <TextView
+                    android:id="@+id/call_estimated_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 1hour "
+                    android:textSize="10pt" />
+            </LinearLayout>
+			<!-- 위치 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="location  : "
+                    android:textSize="10pt" />
+
+                <Button
+                    android:id="@+id/call_button_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="click" />
+
+            </LinearLayout>
+            <!-- 기타 요청 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="extra requirement : "
+                    android:textSize="10pt" />
+
+                <TextView
+                    android:id="@+id/call_extra_require"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" some rquirements "
+                    android:textSize="10pt" />
+            </LinearLayout>
+            <!-- 이용 인원 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="duration : "
+                    android:textSize="10pt" />
+
+                <TextView
+                    android:id="@+id/call_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 40 minutes "
+                    android:textSize="10pt" />
+            </LinearLayout>
+            <!-- 도착 시간 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="arrival time : "
+                    android:textSize="10pt" />
+
+                <TextView
+                    android:id="@+id/call_arrival_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 3:20 "
+                    android:textSize="10pt" />
+            </LinearLayout>
+            <!-- 기름값 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="fuel : "
+                    android:textSize="10pt" />
+
+                <TextView
+                    android:id="@+id/call_fuel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 6320 won "
+                    android:textSize="10pt" />
+            </LinearLayout>
+            <!-- 요청자 이름 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="caller : "
+                    android:textSize="10pt" />
+
+                <TextView
+                    android:id="@+id/call_client"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" somebody "
+                    android:textSize="10pt" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

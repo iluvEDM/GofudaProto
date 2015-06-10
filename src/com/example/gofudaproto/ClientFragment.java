@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass. Activities that contain this fragment
@@ -16,7 +18,7 @@ import android.view.ViewGroup;
  * this fragment.
  *
  */
-public class ClientFragment extends Fragment {
+public class ClientFragment extends Fragment implements OnClickListener{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
@@ -27,7 +29,12 @@ public class ClientFragment extends Fragment {
 	private String mParam2;
 
 	private OnFragmentInteractionListener mListener;
-
+	private Button mCallButton;
+	private Button mMenuButton;
+	private Button mReviewButton;
+	private Button mProfileButton;
+	private ClientCallFragment mCallFragment;
+	private MainActivity mParentActivity;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -50,6 +57,17 @@ public class ClientFragment extends Fragment {
 
 	public ClientFragment() {
 		// Required empty public constructor
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		mCallFragment = new ClientCallFragment();
+		mParentActivity = (MainActivity)getActivity();
+		getActivity().getSupportFragmentManager().beginTransaction()
+		.replace(R.id.client_container, mCallFragment).commit();
+		mParentActivity.setHaveToBack(true);
 	}
 
 	@Override
@@ -74,7 +92,7 @@ public class ClientFragment extends Fragment {
 			mListener.onFragmentInteraction(uri);
 		}
 	}
-
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -104,6 +122,29 @@ public class ClientFragment extends Fragment {
 	public interface OnFragmentInteractionListener {
 		// TODO: Update argument type and name
 		public void onFragmentInteraction(Uri uri);
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch(v.getId()){
+		case R.id.bt_call:
+			getActivity().getSupportFragmentManager().beginTransaction()
+			.replace(R.id.call_contain, mCallFragment).commit();
+			break;
+		case R.id.bt_menu:
+			break;
+		case R.id.bt_review:
+			break;
+		case R.id.bt_profile:
+			break;
+		
+		}
+		
+	}
+	
+	private void updateCurrentRequirements(){
+		
 	}
 
 }

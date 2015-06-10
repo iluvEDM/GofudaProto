@@ -19,19 +19,19 @@
 	
             <Button
                 android:id = "@+id/call_time"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="time" 
                 />
             <Button
                 android:id = "@+id/call_location"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="location" 
                 />
             <Button
                 android:id = "@+id/call_people"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="people" 
                 />
@@ -42,12 +42,14 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_weight="5"
-            android:orientation="vertical" >
-			<ScrollView
-                android:id="@+id/event_calls"
+            android:orientation="vertical" 
+            >
+            <ListView
+                android:id="@+id/event_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" />
+                android:layout_height="match_parent" 
+                ></ListView>
+			
         </LinearLayout>
     </LinearLayout>
 
