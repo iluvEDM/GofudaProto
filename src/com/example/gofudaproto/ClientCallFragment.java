@@ -34,6 +34,8 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	private ArrayList<CallThumbNailView> mCallThumbNailArray;
 	private boolean isCallCountZero;
 	private OnFragmentInteractionListener mListener;
+	
+	private String mMessageSendingMenuType;
 
 	/**
 	 * Use this factory method to create a new instance of this fragment using
@@ -103,7 +105,14 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 //					+ " must implement OnFragmentInteractionListener");
 //		}
 	}
-
+	
+	public void makeMenuTypeMessage(int dining , int desert, int beverage){
+		
+		mMessageSendingMenuType = "["+ String.valueOf(dining) + "," + String.valueOf(desert) +","+ String.valueOf(beverage) +"]";
+				
+		
+	}
+	
 	@Override
 	public void onDetach() {
 		super.onDetach();

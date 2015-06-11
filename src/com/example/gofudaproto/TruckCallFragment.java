@@ -33,6 +33,8 @@ public class TruckCallFragment extends Fragment implements ListAdapter{
 	private ArrayList<CallPaper> mCallArray;
 	private ArrayList<View> mCallThumbnailArray;
 	private Button mTimeButton;
+	private Button mLocationButton;
+	private Button mPeopleButton;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -146,7 +148,9 @@ public class TruckCallFragment extends Fragment implements ListAdapter{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT);
+				Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT).show();				
+				requireCallDetailToServer(mCallArray.get(mCallThumbnailArray.indexOf(v)).getCallId());
+				loadCallDetailView();
 			}
 		});
 		return mCallThumbnailArray.get(position);
@@ -181,5 +185,11 @@ public class TruckCallFragment extends Fragment implements ListAdapter{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	public void requireCallDetailToServer(int callId){
+		
+	}
+	
+	public void loadCallDetailView(){
+		
+	}
 }

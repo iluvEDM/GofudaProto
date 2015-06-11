@@ -1,5 +1,9 @@
 package com.example.gofudaproto;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -91,7 +95,43 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 		super.onDetach();
 		mListener = null;
 	}
-
+	
+	private void loadConfirmedCallInfo(){
+		
+	}
+	
+	private void loadConfirmedCallNumber(){
+		
+	}
+//	id / customer_id / state / name / size / position / time / need_time / etc / truck_count
+	private void parseConfirmedCall(String jsonString){
+		if(jsonString == null) return;
+			
+		try {
+			JSONObject jsonObject = new JSONObject(jsonString);
+			JSONArray calls = jsonObject.getJSONArray("confirm_calls");
+			
+			for(int i=0; i<calls.length() ; i++){
+				JSONObject call = calls.getJSONObject(i);
+				String id = call.getString("id");
+				String customer_id = call.getString("customer_id");
+				String state = call.getString("state");
+				String name = call.getString("name");
+				String size = call.getString("size");
+				String position = call.getString("position");
+				String time = call.getString("time");
+				String need_time = call.getString("need_time");
+				String etc = call.getString("etc");
+				String truck_count = call.getString("truck_count");
+			}
+			
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	/**
 	 * This interface must be implemented by activities that contain this
 	 * fragment to allow an interaction in this fragment to be communicated to

@@ -4,6 +4,34 @@ import android.location.Location;
 
 public class CallPaper {
 	private Integer mCallId;
+	public Boolean getIsActivated() {
+		return mIsActivated;
+	}
+
+	public void setIsActivated(Boolean mIsActivated) {
+		this.mIsActivated = mIsActivated;
+	}
+
+	public Integer getCallId() {
+		return mCallId;
+	}
+
+	public String getEventName() {
+		return mEventName;
+	}
+
+	public Integer getManNumber() {
+		return mManNumber;
+	}
+
+	public Client getCallingClient() {
+		return mCallingClient;
+	}
+
+	public Location getCallLocation() {
+		return mCallLocation;
+	}
+
 	private Boolean mIsActivated;
 	private String mEventName;
 	private Integer mManNumber;
