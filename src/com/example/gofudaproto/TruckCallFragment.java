@@ -146,7 +146,7 @@ public class TruckCallFragment extends Fragment implements ListAdapter{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT);
+				Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT).show();
 			}
 		});
 		return mCallThumbnailArray.get(position);
