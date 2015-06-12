@@ -2,6 +2,9 @@ package com.example.gofudaproto;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import com.nhn.android.maps.NMapView;
@@ -18,10 +21,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass. Activities that contain this fragment
@@ -40,8 +45,9 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 	private String mParam2;
-	private ArrayList<CallPaper> mReadyCallArray;
+//	private ArrayList<CallPaper> mReadyCallArray;
 	private ArrayList<CallThumbNailView> mCallThumbNailArray;
+	private ArrayList<Truck> mReadyTrucks;
 	private boolean isCallCountZero;
 	private OnFragmentInteractionListener mListener;
 
@@ -53,13 +59,13 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	private TextView mBeverageNumberView;
 	private OnClickListener mMenuSelectListener;
 	private LinearLayout mMenuLayout;
-	
+	private LinearLayout mMasterLayout;
 	private Button mSelectCurrentLocationButton;
 	private Button mSelectLocationButton;
 	private Button mComeButton;
 	
 	private CallPaper mCurrentCallPaper;
-	
+	private Button mDragButton;
 	private Button mCancelCallButton;
 	private NGeoPoint mSelectedLocation;
 	
@@ -96,15 +102,15 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
 		mParentActivity = (MainActivity)getActivity();
-		mReadyCallArray = new ArrayList<CallPaper>();
+		mReadyTrucks = new ArrayList<Truck>();
 		mCallThumbNailArray = new ArrayList<CallThumbNailView>();
 		updateClientCalls();
-		if(mReadyCallArray.size()<1){
-			isCallCountZero = true;
-//			
-		}else{
-			isCallCountZero = false;
-		}
+//		if(mReadyTrucks.size()<1){
+//			isCallCountZero = true;
+////			
+//		}else{
+//			isCallCountZero = false;
+//		}
 	}
 
 	@Override
@@ -128,6 +134,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+		mMasterLayout = (LinearLayout)getActivity().findViewById(R.id.client_call_layout);
 		if(isCallCountZero){
 			mSelectDining = (Button)getActivity().findViewById(R.id.call_button_dining);
 			mSelectDesert = (Button)getActivity().findViewById(R.id.call_button_desert);
@@ -140,6 +147,12 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mMenuLayout = (LinearLayout)getActivity().findViewById(R.id.callpaper_container);
 		}else{
 			mCancelCallButton = (Button)getActivity().findViewById(R.id.bt_event_cancel);
+			mDragButton = new Button(getActivity().getBaseContext());
+			mDragButton.setLayoutParams( new LayoutParams(LayoutParams.WRAP_CONTENT, 100));
+			mDragButton.setText("drag");
+			mDragButton.setRight(200);
+			mDragButton.setTop(100);
+			mMasterLayout.addView(mDragButton);
 		}
 		mMenuSelectListener = new OnClickListener() {
 			
@@ -177,19 +190,39 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 				}
 				
 				case R.id.bt_event_cancel:
+					cancelTheCall();
 					break;
 
 				}
 				
 			}
 		};
+		if(isCallCountZero){
+			mSelectDining.setOnClickListener(mMenuSelectListener);
+			mSelectDesert.setOnClickListener(mMenuSelectListener);
+			mSelectBeverage.setOnClickListener(mMenuSelectListener);
+			mSelectCurrentLocationButton.setOnClickListener(mMenuSelectListener);
+			mSelectLocationButton.setOnClickListener(mMenuSelectListener);
+		}
 		
-		mSelectDining.setOnClickListener(mMenuSelectListener);
-		mSelectDesert.setOnClickListener(mMenuSelectListener);
-		mSelectBeverage.setOnClickListener(mMenuSelectListener);
-		mSelectCurrentLocationButton.setOnClickListener(mMenuSelectListener);
-		mSelectLocationButton.setOnClickListener(mMenuSelectListener);
+		mCancelCallButton.setOnClickListener(mMenuSelectListener);
 	}
+	
+	private void cancelTheCall(){
+		// TODO: 현재보낸 요청을 취소하는 메세지를 서버로 전송한다.
+	}
+	private void loadReadyTrucksFromServer(){
+		// TODO: 서버에서 현재 준비된 트럭 정보를 얻어온 뒤 iteration마다 addTruckToComingTruckList()를 통해 mReadyTrucks에 트럭 정보를 추가한다.
+		
+	}
+	
+	private void addTruckToComingTruckList(int callID, String callDescription){
+		Truck truck = new Truck();
+		truck.setReady(callID, callDescription);
+		mReadyTrucks.add(truck);
+	}
+	
+	
 	public int getDiningNumber(){
 		return Integer.parseInt(mDiningNumberView.getText().toString());
 	}
@@ -264,13 +297,35 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
-		return null;
+		CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbNailArray.get(position);
+		Truck tmpTruck = mReadyTrucks.get(position);
+		tmpView.setEventNumber(String.valueOf(position));
+		tmpView.setName(String.valueOf(tmpTruck.getID()));
+		tmpView.setLocation(tmpTruck.getDescription());
+		
+		mCallThumbNailArray.get(position).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Toast.makeText(getActivity().getBaseContext(), "call paper clicked", Toast.LENGTH_SHORT);
+			}
+		});
+		return mCallThumbNailArray.get(position);
+		
 	}
+	public void sendReadyTruckListCall(){
+		
+	}
+	public void sendViewFoodTruckCall(int truck_id){
+		
+	}
+	
 
 	@Override
 	public int getViewTypeCount() {
 		// TODO Auto-generated method stub
-		return mReadyCallArray.size();
+		return mReadyTrucks.size();
 	}
 
 	@Override

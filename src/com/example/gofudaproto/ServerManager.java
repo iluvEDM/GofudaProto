@@ -13,7 +13,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.os.AsyncTask;
 
 public class ServerManager {
-
+	
+	
+	public void sendCallToServer(String msg){
+		
+	}
+	
 	// getStringFromUrl : 주어진 URL 페이지를 문자열로 얻는다.
     public String getStringFromUrl(String url) throws UnsupportedEncodingException {
          

@@ -133,7 +133,7 @@ public class ClientFragment extends Fragment implements OnClickListener{
 		switch(v.getId()){
 		case R.id.bt_call:
 			getActivity().getSupportFragmentManager().beginTransaction()
-			.replace(R.id.call_contain, mCallFragment).commit();
+			.replace(R.id.client_container, mCallFragment).commit();
 			break;
 		case R.id.bt_menu:
 			break;
