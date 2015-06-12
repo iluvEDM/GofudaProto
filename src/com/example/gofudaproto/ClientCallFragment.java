@@ -2,14 +2,24 @@ package com.example.gofudaproto;
 
 import java.util.ArrayList;
 
+import org.w3c.dom.Text;
+
+import com.nhn.android.maps.NMapView;
+import com.nhn.android.maps.maplib.NGeoPoint;
+
 import android.app.Activity;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -26,15 +36,34 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
-
+	private MainActivity mParentActivity;
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 	private String mParam2;
-	private ArrayList<CallPaper> mCallArray;
+	private ArrayList<CallPaper> mReadyCallArray;
 	private ArrayList<CallThumbNailView> mCallThumbNailArray;
 	private boolean isCallCountZero;
 	private OnFragmentInteractionListener mListener;
 
+	private Button mSelectDining;
+	private Button mSelectDesert;
+	private Button mSelectBeverage;
+	private TextView mDiningNumberView;
+	private TextView mDesertNumberView;
+	private TextView mBeverageNumberView;
+	private OnClickListener mMenuSelectListener;
+	private LinearLayout mMenuLayout;
+	
+	private Button mSelectCurrentLocationButton;
+	private Button mSelectLocationButton;
+	private Button mComeButton;
+	
+	private CallPaper mCurrentCallPaper;
+	
+	private Button mCancelCallButton;
+	private NGeoPoint mSelectedLocation;
+	
+	
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -66,11 +95,13 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
-		mCallArray = new ArrayList<CallPaper>();
+		mParentActivity = (MainActivity)getActivity();
+		mReadyCallArray = new ArrayList<CallPaper>();
 		mCallThumbNailArray = new ArrayList<CallThumbNailView>();
 		updateClientCalls();
-		if(mCallArray.size()<1){
+		if(mReadyCallArray.size()<1){
 			isCallCountZero = true;
+//			
 		}else{
 			isCallCountZero = false;
 		}
@@ -80,7 +111,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		if(isCallCountZero){
-			return inflater.inflate(R.layout.truck_call_detail, container, false);	
+			return inflater.inflate(R.layout.client_callpaper_detail, container, false);	
 		}
 		
 		return inflater.inflate(R.layout.client_call, container, false);
@@ -93,6 +124,84 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		}
 	}
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		if(isCallCountZero){
+			mSelectDining = (Button)getActivity().findViewById(R.id.call_button_dining);
+			mSelectDesert = (Button)getActivity().findViewById(R.id.call_button_desert);
+			mSelectBeverage = (Button)getActivity().findViewById(R.id.call_button_beverage);
+			mDiningNumberView = (TextView)getActivity().findViewById(R.id.call_number_dining);
+			mDesertNumberView = (TextView)getActivity().findViewById(R.id.call_number_desert);
+			mBeverageNumberView = (TextView)getActivity().findViewById(R.id.call_number_beverage);
+			mSelectLocationButton = (Button)getActivity().findViewById(R.id.call_button_location);
+			mSelectCurrentLocationButton = (Button)getActivity().findViewById(R.id.call_button_location_current);
+			mMenuLayout = (LinearLayout)getActivity().findViewById(R.id.callpaper_container);
+		}else{
+			mCancelCallButton = (Button)getActivity().findViewById(R.id.bt_event_cancel);
+		}
+		mMenuSelectListener = new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				int currentNumber = 0;
+				switch(v.getId()){
+				case R.id.call_button_dining:
+					currentNumber = Integer.parseInt(mDiningNumberView.getText().toString());
+					currentNumber++;
+					mDiningNumberView.setText(String.valueOf(currentNumber));
+					break;
+				case R.id.call_button_desert:
+					currentNumber = Integer.parseInt(mDesertNumberView.getText().toString());
+					currentNumber++;
+					mDesertNumberView.setText(String.valueOf(currentNumber));
+					break;
+				case R.id.call_button_beverage:
+					currentNumber = Integer.parseInt(mBeverageNumberView.getText().toString());
+					currentNumber++;
+					mBeverageNumberView.setText(String.valueOf(currentNumber));
+					break;
+				case R.id.call_button_location_current:{
+					mParentActivity.isHaveToUseCurrentLocation = true;
+					Intent i = new Intent(getActivity().getBaseContext(), MapManager.class);
+					startActivity(i);
+					break;
+				}
+				
+				case R.id.call_button_location:{
+					Intent i = new Intent(getActivity().getBaseContext(), MapManager.class);
+					startActivity(i);
+					break;
+				}
+				
+				case R.id.bt_event_cancel:
+					break;
+
+				}
+				
+			}
+		};
+		
+		mSelectDining.setOnClickListener(mMenuSelectListener);
+		mSelectDesert.setOnClickListener(mMenuSelectListener);
+		mSelectBeverage.setOnClickListener(mMenuSelectListener);
+		mSelectCurrentLocationButton.setOnClickListener(mMenuSelectListener);
+		mSelectLocationButton.setOnClickListener(mMenuSelectListener);
+	}
+	public int getDiningNumber(){
+		return Integer.parseInt(mDiningNumberView.getText().toString());
+	}
+	
+	public int getDesertNumber(){
+		return Integer.parseInt(mDesertNumberView.getText().toString());
+	}
+	
+	public int getBeverageNumber(){
+		return Integer.parseInt(mBeverageNumberView.getText().toString());
+	}
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -161,7 +270,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	@Override
 	public int getViewTypeCount() {
 		// TODO Auto-generated method stub
-		return mCallArray.size();
+		return mReadyCallArray.size();
 	}
 
 	@Override

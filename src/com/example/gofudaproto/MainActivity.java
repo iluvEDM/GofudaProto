@@ -1,5 +1,7 @@
 package com.example.gofudaproto;
 
+import com.nhn.android.maps.maplib.NGeoPoint;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -15,8 +17,15 @@ public class MainActivity extends ActionBarActivity {
 	private Fragment mPrevFragment;
 	private Fragment mStartFragment;
 	private Fragment mIntroFragment;
+	private static MainActivity mainActivity;
 	Boolean mIsHaveToBackFragment = false;
 	Boolean mIsHaveToStartFragment = false;
+	public boolean isHaveToUseCurrentLocation =false;
+
+	private NGeoPoint mCurrentLocation;
+	private NGeoPoint mSelectedLocation;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -26,6 +35,11 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, mIntroFragment).commit();
 		}
+		mainActivity = this;
+	}
+	
+	static MainActivity getMainActivity(){
+		return mainActivity;
 	}
 	public void setHaveToBack(Boolean isBack){
 		mIsHaveToBackFragment = isBack;

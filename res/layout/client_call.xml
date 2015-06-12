@@ -18,22 +18,22 @@
             android:orientation="horizontal" >
 	
             <Button
-                android:id = "@+id/call_time"
+                android:id = "@+id/call_menu_rice"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="time" 
+                android:text="rice" 
                 />
             <Button
-                android:id = "@+id/call_location"
+                android:id = "@+id/call_menu_beverage"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="location" 
+                android:text="beverage" 
                 />
             <Button
-                android:id = "@+id/call_people"
+                android:id = "@+id/call_menu_desert"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="people" 
+                android:text="desert" 
                 />
         </LinearLayout>
 
@@ -49,6 +49,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" 
                 ></ListView>
+			
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:orientation="vertical" 
+            >
+            <Button
+                android:id="@+id/bt_event_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" 
+                android:text="cancel"
+                ></Button>
 			
         </LinearLayout>
     </LinearLayout>

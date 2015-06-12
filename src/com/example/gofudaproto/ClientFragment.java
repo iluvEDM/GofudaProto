@@ -1,5 +1,7 @@
 package com.example.gofudaproto;
 
+import com.nhn.android.maps.NMapView;
+
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,6 +37,7 @@ public class ClientFragment extends Fragment implements OnClickListener{
 	private Button mProfileButton;
 	private ClientCallFragment mCallFragment;
 	private MainActivity mParentActivity;
+	
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.

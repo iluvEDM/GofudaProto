@@ -65,7 +65,7 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.truck_call_detail, container, false);
+		return inflater.inflate(R.layout.callpaper_detail, container, false);
 	}
 
 	// TODO: Rename method, update argument and hook method into UI event

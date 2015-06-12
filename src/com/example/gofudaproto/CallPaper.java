@@ -1,5 +1,7 @@
 package com.example.gofudaproto;
 
+import com.nhn.android.maps.maplib.NGeoPoint;
+
 import android.location.Location;
 
 public class CallPaper {
@@ -9,7 +11,7 @@ public class CallPaper {
 	private Integer mManNumber;
 	private Client mCallingClient;
 	private Truck mCalledTruck;
-	private Location mCallLocation;
+	private NGeoPoint mCallLocation;
 	
 	public CallPaper(){
 		mCallId = 0;
