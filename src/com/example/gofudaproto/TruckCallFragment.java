@@ -93,6 +93,8 @@ public class TruckCallFragment extends Fragment implements ListAdapter{
 		for(int i=0; i<mCallArray.size();i++){
 			CallThumbNailView tmpTNail = new CallThumbNailView(mContext);
 			tmpTNail.setLayoutParams(new AbsListView.LayoutParams(getActivity().getWindow().getAttributes().width, 150));
+			tmpTNail.setName(mCallArray.get(i).getEventName());
+			//주소 어떻게 얻어오지?
 			mCallThumbnailArray.add(tmpTNail);
 		}
 	}

@@ -144,6 +144,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mBeverageNumberView = (TextView)getActivity().findViewById(R.id.call_number_beverage);
 			mSelectLocationButton = (Button)getActivity().findViewById(R.id.call_button_location);
 			mSelectCurrentLocationButton = (Button)getActivity().findViewById(R.id.call_button_location_current);
+			mComeButton = (Button)getActivity().findViewById(R.id.call_button_come);
 			mMenuLayout = (LinearLayout)getActivity().findViewById(R.id.callpaper_container);
 		}else{
 			mCancelCallButton = (Button)getActivity().findViewById(R.id.bt_event_cancel);
@@ -192,9 +193,10 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 				case R.id.bt_event_cancel:
 					cancelTheCall();
 					break;
-
+				case R.id.call_button_come:
+					sendTheCall();
+					break;
 				}
-				
 			}
 		};
 		if(isCallCountZero){
@@ -203,11 +205,14 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mSelectBeverage.setOnClickListener(mMenuSelectListener);
 			mSelectCurrentLocationButton.setOnClickListener(mMenuSelectListener);
 			mSelectLocationButton.setOnClickListener(mMenuSelectListener);
+			mComeButton.setOnClickListener(mMenuSelectListener);
 		}
 		
 		mCancelCallButton.setOnClickListener(mMenuSelectListener);
 	}
-	
+	private void sendTheCall(){
+		// TODO: 현재 제작된 요청서를 서버로 전달한다.
+	}
 	private void cancelTheCall(){
 		// TODO: 현재보낸 요청을 취소하는 메세지를 서버로 전송한다.
 	}
