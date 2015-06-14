@@ -31,11 +31,6 @@ public class MapViewFragment extends Fragment implements OnClickListener{
 	private String mParam2;
 
 	private OnFragmentInteractionListener mListener;
-	private Button mCallButton;
-	private Button mMenuButton;
-	private Button mReviewButton;
-	private Button mProfileButton;
-	private ClientCallFragment mCallFragment;
 	private MainActivity mParentActivity;
 	
 	/**
@@ -66,7 +61,6 @@ public class MapViewFragment extends Fragment implements OnClickListener{
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		mCallFragment = new ClientCallFragment();
 		mParentActivity = (MainActivity)getActivity();
 		getActivity().getSupportFragmentManager().beginTransaction()
 		.replace(R.id.client_container, mCallFragment).commit();
