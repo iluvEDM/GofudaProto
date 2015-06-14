@@ -1,5 +1,7 @@
 package com.example.gofudaproto;
 
+import net.daum.mf.map.api.MapView;
+
 import com.nhn.android.maps.maplib.NGeoPoint;
 
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.os.Build;
 
 public class MainActivity extends ActionBarActivity {
@@ -21,10 +24,10 @@ public class MainActivity extends ActionBarActivity {
 	Boolean mIsHaveToBackFragment = false;
 	Boolean mIsHaveToStartFragment = false;
 	public boolean isHaveToUseCurrentLocation =false;
-
+	private static final String API_KEY = "867b82fb3cbe6e4b39c4e90405b6bc5d";
 	private NGeoPoint mCurrentLocation;
 	private NGeoPoint mSelectedLocation;
-	
+	private net.daum.mf.map.api.MapView mMapView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,9 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, mIntroFragment).commit();
 		}
+		mMapView= new net.daum.mf.map.api.MapView(this);
+		mMapView.setDaumMapApiKey(API_KEY);
+		mMapView.setMapType(MapView.MapType.Standard);
 		mainActivity = this;
 	}
 	
@@ -51,7 +57,9 @@ public class MainActivity extends ActionBarActivity {
 	public void setPrevFragment(Fragment fragment){
 		this.mPrevFragment = fragment;
 	}
-
+	public MapView getMapView(){
+		return mMapView;
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

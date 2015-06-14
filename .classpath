@@ -6,5 +6,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/nmaps.jar"/>
+	<classpathentry kind="lib" path="libs/libDaumMapAndroid.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

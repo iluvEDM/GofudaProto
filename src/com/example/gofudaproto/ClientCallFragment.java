@@ -2,6 +2,9 @@ package com.example.gofudaproto;
 
 import java.util.ArrayList;
 
+import net.daum.android.map.MapView;
+import net.daum.android.map.MapViewEventListener;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,9 +39,12 @@ import android.widget.Toast;
  * of this fragment.
  *
  */
-public class ClientCallFragment extends android.support.v4.app.Fragment implements ListAdapter{
+public class ClientCallFragment extends android.support.v4.app.Fragment implements ListAdapter,MapViewEventListener{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+	
+	
+	
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
 	private MainActivity mParentActivity;
@@ -105,12 +111,12 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		mReadyTrucks = new ArrayList<Truck>();
 		mCallThumbNailArray = new ArrayList<CallThumbNailView>();
 		updateClientCalls();
-//		if(mReadyTrucks.size()<1){
-//			isCallCountZero = true;
-////			
-//		}else{
-//			isCallCountZero = false;
-//		}
+		if(mReadyTrucks.size()<1){
+			isCallCountZero = true;
+//			
+		}else{
+			isCallCountZero = false;
+		}
 	}
 
 	@Override
@@ -146,6 +152,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mSelectCurrentLocationButton = (Button)getActivity().findViewById(R.id.call_button_location_current);
 			mComeButton = (Button)getActivity().findViewById(R.id.call_button_come);
 			mMenuLayout = (LinearLayout)getActivity().findViewById(R.id.callpaper_container);
+			// java code
 		}else{
 			mCancelCallButton = (Button)getActivity().findViewById(R.id.bt_event_cancel);
 			mDragButton = new Button(getActivity().getBaseContext());
@@ -178,15 +185,15 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 					mBeverageNumberView.setText(String.valueOf(currentNumber));
 					break;
 				case R.id.call_button_location_current:{
+					mMenuLayout.removeView(mParentActivity.getMapView());
 					mParentActivity.isHaveToUseCurrentLocation = true;
-					Intent i = new Intent(getActivity().getBaseContext(), MapManager.class);
-					startActivity(i);
+					mMenuLayout.addView(mParentActivity.getMapView());
 					break;
 				}
 				
 				case R.id.call_button_location:{
-					Intent i = new Intent(getActivity().getBaseContext(), MapManager.class);
-					startActivity(i);
+//					Intent i = new Intent(getActivity().getBaseContext(), MapManager.class);
+//					startActivity(i);
 					break;
 				}
 				
@@ -206,9 +213,10 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mSelectCurrentLocationButton.setOnClickListener(mMenuSelectListener);
 			mSelectLocationButton.setOnClickListener(mMenuSelectListener);
 			mComeButton.setOnClickListener(mMenuSelectListener);
-		}
+		}else{
 		
 		mCancelCallButton.setOnClickListener(mMenuSelectListener);
+		}
 	}
 	private void sendTheCall(){
 		// TODO: 현재 제작된 요청서를 서버로 전달한다.
@@ -367,6 +375,12 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	public boolean isEnabled(int position) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void onLoadMapView() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
