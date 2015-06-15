@@ -56,7 +56,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	private ArrayList<Truck> mReadyTrucks;
 	private boolean isCallCountZero;
 	private OnFragmentInteractionListener mListener;
-
+	private MapViewFragment mMapFragment;
 	private Button mSelectDining;
 	private Button mSelectDesert;
 	private Button mSelectBeverage;
@@ -152,6 +152,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mSelectCurrentLocationButton = (Button)getActivity().findViewById(R.id.call_button_location_current);
 			mComeButton = (Button)getActivity().findViewById(R.id.call_button_come);
 			mMenuLayout = (LinearLayout)getActivity().findViewById(R.id.callpaper_container);
+			mMapFragment = new MapViewFragment();
 			// java code
 		}else{
 			mCancelCallButton = (Button)getActivity().findViewById(R.id.bt_event_cancel);
@@ -185,15 +186,12 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 					mBeverageNumberView.setText(String.valueOf(currentNumber));
 					break;
 				case R.id.call_button_location_current:{
-					mMenuLayout.removeView(mParentActivity.getMapView());
-					mParentActivity.isHaveToUseCurrentLocation = true;
-					mMenuLayout.addView(mParentActivity.getMapView());
+					getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, mMapFragment).commit();
 					break;
 				}
 				
 				case R.id.call_button_location:{
-//					Intent i = new Intent(getActivity().getBaseContext(), MapManager.class);
-//					startActivity(i);
+					getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, mMapFragment).commit();
 					break;
 				}
 				

@@ -1,5 +1,7 @@
 package com.example.gofudaproto;
 
+import net.daum.mf.map.api.MapView;
+
 import com.nhn.android.maps.NMapView;
 
 import android.app.Activity;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 /**
  * A simple {@link Fragment} subclass. Activities that contain this fragment
@@ -20,18 +23,20 @@ import android.widget.Button;
  * this fragment.
  *
  */
-public class MapViewFragment extends Fragment implements OnClickListener{
+public class MapViewFragment extends Fragment {
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
-
+	private static final String API_KEY = "867b82fb3cbe6e4b39c4e90405b6bc5d";
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 	private String mParam2;
 
 	private OnFragmentInteractionListener mListener;
 	private MainActivity mParentActivity;
+	private MapView mMapView;
+	private RelativeLayout mMainLayout;
 	
 	/**
 	 * Use this factory method to create a new instance of this fragment using
@@ -62,9 +67,14 @@ public class MapViewFragment extends Fragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		mParentActivity = (MainActivity)getActivity();
-		getActivity().getSupportFragmentManager().beginTransaction()
-		.replace(R.id.client_container, mCallFragment).commit();
+		mMainLayout = (RelativeLayout)getActivity().findViewById(R.id.map_mainlayout);
+		mMapView = mParentActivity.getMapView();
+		
+//		getActivity().getSupportFragmentManager().beginTransaction()
+//		.replace(R.id.client_container, mCallFragment).commit();
 		mParentActivity.setHaveToBack(true);
+		mMainLayout.addView(mMapView);
+		
 	}
 
 	@Override
@@ -80,7 +90,7 @@ public class MapViewFragment extends Fragment implements OnClickListener{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_client, container, false);
+		return inflater.inflate(R.layout.activity_map, container, false);
 	}
 
 	// TODO: Rename method, update argument and hook method into UI event
@@ -121,25 +131,6 @@ public class MapViewFragment extends Fragment implements OnClickListener{
 		public void onFragmentInteraction(Uri uri);
 	}
 
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch(v.getId()){
-		case R.id.bt_call:
-			getActivity().getSupportFragmentManager().beginTransaction()
-			.replace(R.id.client_container, mCallFragment).commit();
-			break;
-		case R.id.bt_menu:
-			break;
-		case R.id.bt_review:
-			break;
-		case R.id.bt_profile:
-			break;
-		
-		}
-		
-	}
-	
 	private void updateCurrentRequirements(){
 		
 	}

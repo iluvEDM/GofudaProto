@@ -1,5 +1,8 @@
 package com.example.gofudaproto;
 
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
 
 import com.nhn.android.maps.maplib.NGeoPoint;
@@ -8,6 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +20,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.os.Build;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements MapView.MapViewEventListener, MapView.CurrentLocationEventListener, MapView.POIItemEventListener{
 	private Fragment mPrevFragment;
 	private Fragment mStartFragment;
 	private Fragment mIntroFragment;
@@ -40,7 +44,12 @@ public class MainActivity extends ActionBarActivity {
 		}
 		mMapView= new net.daum.mf.map.api.MapView(this);
 		mMapView.setDaumMapApiKey(API_KEY);
-		mMapView.setMapType(MapView.MapType.Standard);
+//		mMapView.setMapType(MapView.MapType.Standard);
+		mMapView.setCurrentLocationTrackingMode(net.daum.mf.map.api.MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+		mMapView.setShowCurrentLocationMarker(true);
+		mMapView.setCurrentLocationEventListener(this);
+		mMapView.setMapViewEventListener(this);
+		mMapView.setPOIItemEventListener(this);
 		mainActivity = this;
 	}
 	
@@ -93,6 +102,85 @@ public class MainActivity extends ActionBarActivity {
 			// TODO Auto-generated method stub
 			super.onBackPressed();
 		}
+	}
+
+	@Override
+	public void onCalloutBalloonOfPOIItemTouched(MapView arg0, MapPOIItem arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDraggablePOIItemMoved(MapView arg0, MapPOIItem arg1,
+			MapPoint arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPOIItemSelected(MapView arg0, MapPOIItem arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCurrentLocationDeviceHeadingUpdate(MapView arg0, float arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCurrentLocationUpdate(MapView arg0, MapPoint arg1, float arg2) {
+		// TODO Auto-generated method stub
+		Log.d("map view", "current location update");
+	}
+
+	@Override
+	public void onCurrentLocationUpdateCancelled(MapView arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCurrentLocationUpdateFailed(MapView arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMapViewCenterPointMoved(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		Log.d("map view", "center moved");
+	}
+
+	@Override
+	public void onMapViewDoubleTapped(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMapViewInitialized(MapView arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMapViewLongPressed(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMapViewSingleTapped(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMapViewZoomLevelChanged(MapView arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
