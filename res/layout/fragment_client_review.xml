@@ -1,0 +1,55 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.gofudaproto.TruckReviewFragment" >
+
+  <LinearLayout 
+      android:id="@+id/review_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+      
+      <LinearLayout
+          android:id="@+id/review_menu_layout"
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_weight="1"
+          android:gravity="center_horizontal|center_vertical"
+          android:orientation="horizontal" >
+          <Button
+              android:id="@+id/review_client_meal"
+              android:layout_width="wrap_content"
+              android:layout_height="50dp" 
+              android:text="meal"
+              />
+          <Button
+              android:id="@+id/review_client_desert"
+              android:layout_width="wrap_content"
+              android:layout_height="50dp" 
+              android:text="desert"
+              />
+          <Button
+              android:id="@+id/review_client_beverage"
+              android:layout_width="wrap_content"
+              android:layout_height="50dp" 
+              android:text="beverage"
+              />
+      </LinearLayout>
+      
+      <LinearLayout
+          android:id="@+id/review_detail_layout"
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_weight="7"
+          android:orientation="vertical" >
+          <ListView
+              android:id="@+id/review_detail_list"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" 
+              >
+              
+          </ListView>
+      </LinearLayout>
+  </LinearLayout>
+</FrameLayout>

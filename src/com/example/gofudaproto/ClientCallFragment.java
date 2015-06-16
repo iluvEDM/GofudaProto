@@ -161,6 +161,14 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mDragButton.setText("drag");
 			mDragButton.setRight(200);
 			mDragButton.setTop(100);
+			mDragButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 			mMasterLayout.addView(mDragButton);
 		}
 		mMenuSelectListener = new OnClickListener() {
@@ -186,6 +194,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 					mBeverageNumberView.setText(String.valueOf(currentNumber));
 					break;
 				case R.id.call_button_location_current:{
+					mParentActivity.getCurrentLocation();
 					getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, mMapFragment).commit();
 					break;
 				}
