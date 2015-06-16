@@ -1,5 +1,7 @@
 package com.example.gofudaproto;
 
+import com.example.gofudaproto.server.ServerManagerTest;
+
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -93,6 +95,10 @@ public class IntroFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
+				ServerManagerTest.test1();
+				
+				
+				
 				// TODO Auto-generated method stub
 				switch(v.getId()){
 				case R.id.bt_truck_install:

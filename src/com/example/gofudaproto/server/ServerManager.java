@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -77,8 +78,9 @@ public class ServerManager
 					
 					
 					StringBuffer buffer = new StringBuffer();
-					buffer.append("JSON=");
-					buffer.append(param);
+					buffer.append(URLEncoder.encode("JSON","UTF-8"));
+					buffer.append("=");
+					buffer.append(URLEncoder.encode(param,"UTF-8"));
 					OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "utf-8");
 					PrintWriter writer = new PrintWriter(outStream);
 					writer.write(buffer.toString());
@@ -95,11 +97,12 @@ public class ServerManager
 					reader.close();
 					tmp.close();
 
-					return result;
+					return builder.toString();
 					
 				}  catch (Exception e)
 				{
 					defaultHttpClient.getConnectionManager().shutdown();
+					listener.serverDidError(e.getMessage());
 					e.printStackTrace();
 				} finally {
 					try {
