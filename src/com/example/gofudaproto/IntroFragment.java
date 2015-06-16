@@ -95,7 +95,7 @@ public class IntroFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				ServerManagerTest.test1();
+//				ServerManagerTest.test1();
 				
 				
 				
