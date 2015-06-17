@@ -19,8 +19,11 @@ import android.app.Activity;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.util.Log;
 import android.view.Gravity;
@@ -85,6 +88,11 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	private ProgressBar mProgressBar;
 	private ClientViewTruckFragment mViewTruckDetailFragment;
 	private ListView mTruckListView;
+	private SharedPreferences mPreference;
+	private SharedPreferences.Editor mEditor;
+	
+	private boolean mIsSendRequest = false;
+	private boolean mIsShowTruckRequest = false;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -116,6 +124,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
+		mPreference = getActivity().getSharedPreferences("gopuda", Activity.MODE_PRIVATE);
 		mParentActivity = (MainActivity)getActivity();
 		mReadyTrucks = new ArrayList<Truck>();
 		mCallThumbNailArray = new ArrayList<CallThumbNailView>();
@@ -266,6 +275,8 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			String param = makeMenuCallParameter();
 			mParentActivity.getServerManager().doSendCall(ServerManager.SEND_REQUEST, makeMenuCallParameter(), this);
 		}
+		mIsSendRequest = true;
+		mIsShowTruckRequest = false;
 		mFrameLayout.addView(mProgressBar);
 	}
 	private void cancelTheCall(){
@@ -274,8 +285,9 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	}
 	private void loadReadyTrucksFromServer(){
 		// TODO: 서버에서 현재 준비된 트럭 정보를 얻어온 뒤 iteration마다 addTruckToComingTruckList()를 통해 mReadyTrucks에 트럭 정보를 추가한다.
-		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMING_TRUCKS, makeMenuCallParameter(), this);
-		
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMING_TRUCKS, makeShowingTrucksParameter(1234), this);
+		mIsShowTruckRequest = true;
+		mIsSendRequest = true;
 	}
 	
 	private void addTruckToComingTruckList(int callID, String callDescription, String truckName , Truck.TruckType type){
@@ -524,36 +536,52 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	public void serverDidEnd(String result) {
 		// TODO Auto-generated method stub
 		mFrameLayout.removeView(mProgressBar);
-		try {
-			JSONArray array = new JSONArray(result);
-			for(int i = 0; i<array.length(); i++){
-				JSONObject truck = array.getJSONObject(i);
-				String truck_name = truck.getString("name");
-				Truck.TruckType type;
-				switch (truck.getInt("type")) {
-				case 0:
-					type = Truck.TruckType.MEAL;
-					break;
-				case 1:
-					type = Truck.TruckType.DESERT;
-					break;
-				case 2:
-					type = Truck.TruckType.BEVERAGE;
-					break;
-				default:
-					type = Truck.TruckType.MEAL;
-					break;
+		if(mIsSendRequest){
+			if(result != null){
+				try {
+					JSONObject jobj = new JSONObject(result);
+					int request_id = jobj.getInt("request_id");
+					mParentActivity.CurrentClient.setCurrentRequest(request_id);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				int truck_id = truck.getInt("id");
-				String description = truck.getString("description");
-				addTruckToComingTruckList(truck_id, description, truck_name, type);
+				
 			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}else if(mIsShowTruckRequest){
+			if(result != null){
+				try {
+					JSONArray array = new JSONArray(result);
+					for(int i = 0; i<array.length(); i++){
+						JSONObject truck = array.getJSONObject(i);
+						String truck_name = truck.getString("name");
+						Truck.TruckType type;
+						switch (truck.getInt("type")) {
+						case 0:
+							type = Truck.TruckType.MEAL;
+							break;
+						case 1:
+							type = Truck.TruckType.DESERT;
+							break;
+						case 2:
+							type = Truck.TruckType.BEVERAGE;
+							break;
+						default:
+							type = Truck.TruckType.MEAL;
+							break;
+						}
+						int truck_id = truck.getInt("id");
+						String description = truck.getString("description");
+						addTruckToComingTruckList(truck_id, description, truck_name, type);
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		
-		Log.d("server", result);
+		
 	}
 
 	@Override

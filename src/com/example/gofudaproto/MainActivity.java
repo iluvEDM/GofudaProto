@@ -39,8 +39,8 @@ public class MainActivity extends ActionBarActivity{
 	private net.daum.mf.map.api.MapView mMapView;
 	private int beforeContainerID;
 	private ServerManager mServerManager;
-	private Client mCurrentClient;
-	private Truck mCurrentTruck;
+	Client CurrentClient;
+	Truck CurrentTruck;
 	LocationManager mLocMgr;
 	// GPSTracker class
     private GpsInfo gps;
@@ -53,6 +53,8 @@ public class MainActivity extends ActionBarActivity{
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, mIntroFragment).commit();
 		}
+		CurrentClient = new Client();
+		CurrentTruck = new Truck();
 		mMapView= new net.daum.mf.map.api.MapView(this);
 		mMapView.setDaumMapApiKey(API_KEY);
 		mMapView.setCurrentLocationTrackingMode(net.daum.mf.map.api.MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);

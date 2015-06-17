@@ -36,6 +36,7 @@ public class ClientFragment extends Fragment implements OnClickListener{
 	private Button mReviewButton;
 	private Button mProfileButton;
 	private ClientCallFragment mCallFragment;
+	private ClientReviewFragment mReviewFragment;
 	private MainActivity mParentActivity;
 	
 	/**
@@ -67,6 +68,7 @@ public class ClientFragment extends Fragment implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		mCallFragment = new ClientCallFragment();
+		mReviewFragment = new ClientReviewFragment();
 		mParentActivity = (MainActivity)getActivity();
 		getActivity().getSupportFragmentManager().beginTransaction()
 		.replace(R.id.client_container, mCallFragment).commit();
@@ -138,6 +140,9 @@ public class ClientFragment extends Fragment implements OnClickListener{
 		case R.id.bt_menu:
 			break;
 		case R.id.bt_review:
+			getActivity().getSupportFragmentManager().beginTransaction()
+			.replace(R.id.client_container, mReviewFragment).commit();
+
 			break;
 		case R.id.bt_profile:
 			break;
