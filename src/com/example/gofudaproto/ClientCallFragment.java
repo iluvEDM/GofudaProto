@@ -316,7 +316,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	
 	private String makeTruckCountString(){
 		
-		return String.format("[\"%d\",\"%d\",\"%d\"]", getDiningNumber(),getDesertNumber(),getBeverageNumber());
+		return String.format("[%d,%d,%d]", getDiningNumber(),getDesertNumber(),getBeverageNumber());
 		
 //		return "["+"\""+getDiningNumber()+","+getDesertNumber()+","+getBeverageNumber()+"]";
 	}
