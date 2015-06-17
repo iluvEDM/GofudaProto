@@ -63,6 +63,9 @@ public class MainActivity extends ActionBarActivity{
 		gps = new GpsInfo(MainActivity.this);
         
 	}
+	public void loadCurrentClient(){
+		
+	}
 	public ServerManager getServerManager(){
 		return mServerManager;
 	}
@@ -89,9 +92,15 @@ public class MainActivity extends ActionBarActivity{
         return null;
 	}
 	
-	
+	public String makeIndexString(String word){
+		return " \""+word+"\"";
+	}
 	public void setHaveToBack(Boolean isBack){
 		mIsHaveToBackFragment = isBack;
+	}
+	public void setHaveToBackToStart(Boolean isStart){
+		mIsHaveToBackFragment = false;
+		mIsHaveToBackFragment = isStart;
 	}
 	public void setStartFragment(Fragment fragment){
 		this.mStartFragment = fragment;

@@ -22,9 +22,11 @@ public class Truck {
 		mProfile = new TruckProfile();
 	}
 	
-	public void setReady(int id, String des){
+	public void setReady(int id, String des, String name , TruckType type){
 		mId = id;
+		mName = name;
 		mProfile.description = des;
+		mType = type;
 	}
 	public String getName(){
 		return mName;

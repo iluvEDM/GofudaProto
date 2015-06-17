@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,7 +83,8 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	private NGeoPoint mSelectedLocation;
 	private FrameLayout mFrameLayout;
 	private ProgressBar mProgressBar;
-	
+	private ClientViewTruckFragment mViewTruckDetailFragment;
+	private ListView mTruckListView;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -117,7 +119,8 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		mParentActivity = (MainActivity)getActivity();
 		mReadyTrucks = new ArrayList<Truck>();
 		mCallThumbNailArray = new ArrayList<CallThumbNailView>();
-		updateClientCalls();
+//		updateClientCalls();
+		loadReadyTrucksFromServer();
 		if(mReadyTrucks.size()<1){
 			isCallCountZero = true;
 //			
@@ -126,6 +129,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		}
 		
 		mMapFragment = new MapViewFragment();
+		mViewTruckDetailFragment = new ClientViewTruckFragment();
 
 	}
 
@@ -157,7 +161,8 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		mProgressBar.setVisibility(View.VISIBLE);
 		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(100, 100);
 		params.gravity = Gravity.CENTER;
-		
+		mParentActivity.setHaveToBackToStart(true);
+		mProgressBar.setLayoutParams(params);
 		if(isCallCountZero){
 			mSelectDining = (Button)getActivity().findViewById(R.id.call_button_dining);
 			mSelectDesert = (Button)getActivity().findViewById(R.id.call_button_desert);
@@ -173,11 +178,13 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			// java code
 		}else{
 			mCancelCallButton = (Button)getActivity().findViewById(R.id.bt_event_cancel);
+			mTruckListView = (ListView)getActivity().findViewById(R.id.event_list);
 			mDragButton = new Button(getActivity().getBaseContext());
 			mDragButton.setLayoutParams( new LayoutParams(LayoutParams.WRAP_CONTENT, 100));
 			mDragButton.setText("drag");
-			mDragButton.setRight(200);
-			mDragButton.setTop(100);
+			params = new FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, android.widget.FrameLayout.LayoutParams.WRAP_CONTENT);
+			params.gravity = Gravity.RIGHT|Gravity.CENTER_VERTICAL;
+			mDragButton.setLayoutParams(params);
 			mDragButton.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -186,7 +193,8 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 					
 				}
 			});
-			mMasterLayout.addView(mDragButton);
+			mFrameLayout.addView(mDragButton);
+			mTruckListView.setAdapter(this);
 		}
 		mMenuSelectListener = new OnClickListener() {
 			
@@ -262,16 +270,24 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	}
 	private void cancelTheCall(){
 		// TODO: 현재보낸 요청을 취소하는 메세지를 서버로 전송한다.
+		mParentActivity.getServerManager().doSendCall(ServerManager.CANCEL_REQUEST, makeMenuCallParameter(), this);
 	}
 	private void loadReadyTrucksFromServer(){
 		// TODO: 서버에서 현재 준비된 트럭 정보를 얻어온 뒤 iteration마다 addTruckToComingTruckList()를 통해 mReadyTrucks에 트럭 정보를 추가한다.
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMING_TRUCKS, makeMenuCallParameter(), this);
 		
 	}
 	
-	private void addTruckToComingTruckList(int callID, String callDescription){
+	private void addTruckToComingTruckList(int callID, String callDescription, String truckName , Truck.TruckType type){
 		Truck truck = new Truck();
-		truck.setReady(callID, callDescription);
+		truck.setReady(callID, callDescription, truckName, type);
+		
 		mReadyTrucks.add(truck);
+		CallThumbNailView ctView = new CallThumbNailView(getActivity().getApplicationContext());
+		ctView.setName(truckName);
+		ctView.setLocation(callDescription);
+		
+		mCallThumbNailArray.add(ctView);
 	}
 	
 	public boolean isHasNoMenuSelect(){
@@ -280,7 +296,12 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		}
 			return false;
 	}
-	
+	private String makeCancelQuery(){
+		return "";
+	}
+	private String makeShowingTrucksParameter(int request_id){
+		return "{"+ makeIndexString("request_id") + ":"+makeIndexString(String.valueOf(request_id)) +"}";
+	}
 	private String makeMenuCallParameter(){
 		return "{" 
 				+ makeIndexString("customer_id") + ":" + makeIndexString("900917") + ","
@@ -363,20 +384,49 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		public void onFragmentInteraction(Uri uri);
 	}
 	
-	private void updateClientCalls(){
-		
-	}
+//	private void updateClientCalls(){
+//		for(int i = 0; i<10 ; i++){
+//			Truck t = new Truck();
+////			t.setReady(1234, "hi im truck");
+//			mReadyTrucks.add(t);
+//			
+//		}
+//	}
 
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return 0;
+		return mReadyTrucks.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
-		return null;
+		CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbNailArray.get(position);
+		Truck tmpTruck = mReadyTrucks.get(position);
+		tmpView.setEventNumber(String.valueOf(position));
+		tmpView.setName(String.valueOf(tmpTruck.getName()));
+		tmpView.setLocation(tmpTruck.getDescription());
+		
+		mCallThumbNailArray.get(position).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Truck t = mReadyTrucks.get(mCallThumbNailArray.indexOf(v));
+				sendViewFoodTruckCall(t.getID());
+				Toast.makeText(getActivity().getBaseContext(), "call paper clicked", Toast.LENGTH_SHORT);
+				
+				getActivity().getSupportFragmentManager().beginTransaction()
+				.replace(R.id.client_container, mViewTruckDetailFragment).commit();
+			}
+		});
+		return mCallThumbNailArray.get(position);
+		
+	}
+	
+	public void setThisFragmentToPrev(){
+		mParentActivity.setPrevFragment(this);
 	}
 
 	@Override
@@ -408,6 +458,11 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 				Truck t = mReadyTrucks.get(mCallThumbNailArray.indexOf(v));
 				sendViewFoodTruckCall(t.getID());
 				Toast.makeText(getActivity().getBaseContext(), "call paper clicked", Toast.LENGTH_SHORT);
+				mParentActivity.setBeforeContainer(R.id.client_container);
+				mParentActivity.setHaveToBack(true);
+				setThisFragmentToPrev();
+				getActivity().getSupportFragmentManager().beginTransaction()
+				.replace(R.id.client_container, mViewTruckDetailFragment).commit();
 			}
 		});
 		return mCallThumbNailArray.get(position);
@@ -469,6 +524,35 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	public void serverDidEnd(String result) {
 		// TODO Auto-generated method stub
 		mFrameLayout.removeView(mProgressBar);
+		try {
+			JSONArray array = new JSONArray(result);
+			for(int i = 0; i<array.length(); i++){
+				JSONObject truck = array.getJSONObject(i);
+				String truck_name = truck.getString("name");
+				Truck.TruckType type;
+				switch (truck.getInt("type")) {
+				case 0:
+					type = Truck.TruckType.MEAL;
+					break;
+				case 1:
+					type = Truck.TruckType.DESERT;
+					break;
+				case 2:
+					type = Truck.TruckType.BEVERAGE;
+					break;
+				default:
+					type = Truck.TruckType.MEAL;
+					break;
+				}
+				int truck_id = truck.getInt("id");
+				String description = truck.getString("description");
+				addTruckToComingTruckList(truck_id, description, truck_name, type);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		Log.d("server", result);
 	}
 
