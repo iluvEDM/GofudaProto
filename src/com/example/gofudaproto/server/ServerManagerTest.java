@@ -2,6 +2,8 @@ package com.example.gofudaproto.server;
 
 import android.util.Log;
 
+import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
+
 public class ServerManagerTest
 {
 	public static void test1(){

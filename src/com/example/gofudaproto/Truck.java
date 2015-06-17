@@ -26,7 +26,9 @@ public class Truck {
 		mId = id;
 		mProfile.description = des;
 	}
-	
+	public String getName(){
+		return mName;
+	}
 	public int getID(){
 		return mId;
 	}

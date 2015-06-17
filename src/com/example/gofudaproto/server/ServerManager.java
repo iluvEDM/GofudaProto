@@ -18,10 +18,7 @@ import android.os.AsyncTask;
 
 import com.example.gofudaproto.MyApplication;
 
-interface OnServerManagerListener {
-	void serverDidEnd(String result);
-	void serverDidError(String error);
-}
+
 
 
 
@@ -29,6 +26,10 @@ interface OnServerManagerListener {
 
 public class ServerManager
 {
+	public static interface OnServerManagerListener {
+		void serverDidEnd(String result);
+		void serverDidError(String error);
+	}
 	public static final String SERVER_ADDRESS = "http://52.69.4.83/";
 	public static final String SEND_COMMENT_REPLY = "send_comment_reply.php";
 	public static final String SHOW_ACCEPTED_REQUEST = "show_accepted_request.php";

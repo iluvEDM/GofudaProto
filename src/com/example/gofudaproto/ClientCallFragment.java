@@ -10,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import com.example.gofudaproto.server.ServerManager;
+import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
 import com.nhn.android.maps.NMapView;
 import com.nhn.android.maps.maplib.NGeoPoint;
 
@@ -20,14 +22,18 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +45,7 @@ import android.widget.Toast;
  * of this fragment.
  *
  */
-public class ClientCallFragment extends android.support.v4.app.Fragment implements ListAdapter,MapViewEventListener{
+public class ClientCallFragment extends android.support.v4.app.Fragment implements ListAdapter,OnServerManagerListener{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	
@@ -74,7 +80,8 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	private Button mDragButton;
 	private Button mCancelCallButton;
 	private NGeoPoint mSelectedLocation;
-	
+	private FrameLayout mFrameLayout;
+	private ProgressBar mProgressBar;
 	
 	/**
 	 * Use this factory method to create a new instance of this fragment using
@@ -117,6 +124,9 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		}else{
 			isCallCountZero = false;
 		}
+		
+		mMapFragment = new MapViewFragment();
+
 	}
 
 	@Override
@@ -141,6 +151,13 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		mMasterLayout = (LinearLayout)getActivity().findViewById(R.id.client_call_layout);
+		mFrameLayout = (FrameLayout)getActivity().findViewById(R.id.client_call_frame);
+		mProgressBar = new ProgressBar(getActivity().getApplicationContext(), null, android.R.attr.progressBarStyleLarge);
+		mProgressBar.setIndeterminate(true);
+		mProgressBar.setVisibility(View.VISIBLE);
+		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(100, 100);
+		params.gravity = Gravity.CENTER;
+		
 		if(isCallCountZero){
 			mSelectDining = (Button)getActivity().findViewById(R.id.call_button_dining);
 			mSelectDesert = (Button)getActivity().findViewById(R.id.call_button_desert);
@@ -152,7 +169,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			mSelectCurrentLocationButton = (Button)getActivity().findViewById(R.id.call_button_location_current);
 			mComeButton = (Button)getActivity().findViewById(R.id.call_button_come);
 			mMenuLayout = (LinearLayout)getActivity().findViewById(R.id.callpaper_container);
-			mMapFragment = new MapViewFragment();
+			
 			// java code
 		}else{
 			mCancelCallButton = (Button)getActivity().findViewById(R.id.bt_event_cancel);
@@ -194,13 +211,18 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 					mBeverageNumberView.setText(String.valueOf(currentNumber));
 					break;
 				case R.id.call_button_location_current:{
-					mParentActivity.getCurrentLocation();
-					getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, mMapFragment).commit();
+					mMapFragment.isHaveToCurrentLocation = true;
+					mParentActivity.setBeforeContainer(R.id.client_container);
+					makeThisFragmentToPrevFragment();
+					getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.client_container, mMapFragment).commit();
 					break;
 				}
 				
 				case R.id.call_button_location:{
-					getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, mMapFragment).commit();
+					mMapFragment.isHaveToCurrentLocation = false;
+					mParentActivity.setBeforeContainer(R.id.client_container);
+					makeThisFragmentToPrevFragment();
+					getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.client_container, mMapFragment).commit();
 					break;
 				}
 				
@@ -225,8 +247,18 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		mCancelCallButton.setOnClickListener(mMenuSelectListener);
 		}
 	}
+	private void makeThisFragmentToPrevFragment(){
+		mParentActivity.setPrevFragment(this);
+	}
 	private void sendTheCall(){
 		// TODO: 현재 제작된 요청서를 서버로 전달한다.
+		if(isHasNoMenuSelect()){
+			Toast.makeText(getActivity().getBaseContext(), "메뉴를 하나이상 선택해주세요", Toast.LENGTH_SHORT).show();
+		}else{
+			String param = makeMenuCallParameter();
+			mParentActivity.getServerManager().doSendCall(ServerManager.SEND_REQUEST, makeMenuCallParameter(), this);
+		}
+		mFrameLayout.addView(mProgressBar);
 	}
 	private void cancelTheCall(){
 		// TODO: 현재보낸 요청을 취소하는 메세지를 서버로 전송한다.
@@ -242,7 +274,52 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		mReadyTrucks.add(truck);
 	}
 	
+	public boolean isHasNoMenuSelect(){
+		if(getDiningNumber()<1 && getDesertNumber()<1 && getBeverageNumber()<1){
+			return true;
+		}
+			return false;
+	}
 	
+	private String makeMenuCallParameter(){
+		return "{" 
+				+ makeIndexString("customer_id") + ":" + makeIndexString("900917") + ","
+				+ makeIndexString("state") + ":" + makeIndexString("1") + ","
+				+ makeIndexString("name") + ":" + makeIndexString("hanyang") + ","
+				+ makeIndexString("size") + ":" + makeIndexString("10") + ","
+				+ makeIndexString("position") + ":" + makeIndexString("20,30") + ","
+				+ makeIndexString("need_time") + ":" + makeIndexString(makeTimeString(1, 10)) + ","
+				+ makeIndexString("etc") + ":" + makeIndexString("come on") + ","
+				+ makeIndexString("truck_count") + ":" + makeIndexString(makeTruckCountString()) + "}";
+	}
+	private String makeIndexString(String word){
+		return " \""+word+"\"";
+	}
+	private String makeTimeString(int hour, int minute){
+		String hourString ="";
+		String minuteString = "";
+		if(hour<10){
+			hourString = "0"+String.valueOf(hour);
+		}else{
+			hourString = String.valueOf(hour);
+		}
+		
+		if(minute<10){
+			minuteString = "0"+String.valueOf(minute);
+		}else{
+			minuteString = String.valueOf(minute);
+		}
+		
+		return hourString + ":" + minuteString + ":00";
+		
+	}
+	
+	private String makeTruckCountString(){
+		
+		return String.format("[\"%d\",\"%d\",\"%d\"]", getDiningNumber(),getDesertNumber(),getBeverageNumber());
+		
+//		return "["+"\""+getDiningNumber()+","+getDesertNumber()+","+getBeverageNumber()+"]";
+	}
 	public int getDiningNumber(){
 		return Integer.parseInt(mDiningNumberView.getText().toString());
 	}
@@ -320,7 +397,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbNailArray.get(position);
 		Truck tmpTruck = mReadyTrucks.get(position);
 		tmpView.setEventNumber(String.valueOf(position));
-		tmpView.setName(String.valueOf(tmpTruck.getID()));
+		tmpView.setName(String.valueOf(tmpTruck.getName()));
 		tmpView.setLocation(tmpTruck.getDescription());
 		
 		mCallThumbNailArray.get(position).setOnClickListener(new OnClickListener() {
@@ -328,6 +405,8 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				Truck t = mReadyTrucks.get(mCallThumbNailArray.indexOf(v));
+				sendViewFoodTruckCall(t.getID());
 				Toast.makeText(getActivity().getBaseContext(), "call paper clicked", Toast.LENGTH_SHORT);
 			}
 		});
@@ -338,9 +417,11 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		
 	}
 	public void sendViewFoodTruckCall(int truck_id){
+//		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMING_TRUCKS, param, this);
+	}
+	public void sendGetRequestInformationCall(){
 		
 	}
-	
 
 	@Override
 	public int getViewTypeCount() {
@@ -385,9 +466,17 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	}
 
 	@Override
-	public void onLoadMapView() {
+	public void serverDidEnd(String result) {
+		// TODO Auto-generated method stub
+		mFrameLayout.removeView(mProgressBar);
+		Log.d("server", result);
+	}
+
+	@Override
+	public void serverDidError(String error) {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

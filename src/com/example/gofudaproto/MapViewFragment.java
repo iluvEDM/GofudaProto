@@ -1,5 +1,7 @@
 package com.example.gofudaproto;
 
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import com.nhn.android.maps.NMapView;
@@ -8,6 +10,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.internal.widget.ViewUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +35,7 @@ public class MapViewFragment extends Fragment {
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 	private String mParam2;
-
+	public boolean isHaveToCurrentLocation = false;
 	private OnFragmentInteractionListener mListener;
 	private MainActivity mParentActivity;
 	private MapView mMapView;
@@ -66,14 +69,29 @@ public class MapViewFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		mParentActivity = (MainActivity)getActivity();
-		mMainLayout = (RelativeLayout)getActivity().findViewById(R.id.map_mainlayout);
-		mMapView = mParentActivity.getMapView();
 		
+		mMainLayout = (RelativeLayout)getActivity().findViewById(R.id.map_mainlayout);
+		
+		MapPoint currentPoint = MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633);
+		if(isHaveToCurrentLocation){
+			if(mParentActivity.getCurrentLocation() != null){
+				mMapView.setMapCenterPoint(mParentActivity.getCurrentLocation(), true);
+				currentPoint = mParentActivity.getCurrentLocation();
+			}
+		}
+		MapPOIItem marker = new MapPOIItem();
+		marker.setItemName("Default Marker");
+		marker.setTag(0);
+		marker.setMapPoint(currentPoint);
+		marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+		marker.setMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+		mMapView.addPOIItem(marker);
 //		getActivity().getSupportFragmentManager().beginTransaction()
 //		.replace(R.id.client_container, mCallFragment).commit();
 		mParentActivity.setHaveToBack(true);
-		mMainLayout.addView(mMapView);
+		
+		
+		
 		
 	}
 
@@ -84,6 +102,8 @@ public class MapViewFragment extends Fragment {
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
+		mParentActivity = (MainActivity)getActivity();
+		mMapView = mParentActivity.getMapView();
 	}
 
 	@Override
@@ -100,6 +120,18 @@ public class MapViewFragment extends Fragment {
 		}
 	}
 	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		if(mMapView.getParent() == null){
+			mMainLayout.addView(mMapView);
+		}else{
+			((ViewGroup)mMapView.getParent()).removeView(mMapView);
+			mMainLayout.addView(mMapView);
+		}
+	}
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);

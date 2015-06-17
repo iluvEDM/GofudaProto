@@ -4,6 +4,8 @@ package com.example.gofudaproto;
 import java.util.ArrayList;
 
 import com.example.gofudaproto.R;
+import com.example.gofudaproto.server.ServerManager;
+import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -24,7 +26,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-public class TruckCallFragment extends Fragment implements ListAdapter{
+public class TruckCallFragment extends Fragment implements ListAdapter , OnServerManagerListener{
 	
 //	private View mBackgroundView;
 	private MainActivity mParentActivity;
@@ -87,6 +89,7 @@ public class TruckCallFragment extends Fragment implements ListAdapter{
 //	}
 	
 	private void getCallPapersFromServer(){
+//		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_INCOMPLETE_REQUESTS, param, this);
 		for(int i=0; i<10 ; i++){
 			mCallArray.add(new CallPaper());
 		}
@@ -135,7 +138,9 @@ public class TruckCallFragment extends Fragment implements ListAdapter{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	private void getRequestPaperInformation(){
+//		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_REQUEST, param, this);
+	}
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
@@ -148,6 +153,7 @@ public class TruckCallFragment extends Fragment implements ListAdapter{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
 				Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT).show();
 			}
 		});
@@ -182,6 +188,18 @@ public class TruckCallFragment extends Fragment implements ListAdapter{
 	public boolean isEnabled(int position) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void serverDidEnd(String result) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void serverDidError(String error) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

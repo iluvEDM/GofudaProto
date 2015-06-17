@@ -108,6 +108,7 @@ public class IntroFragment extends Fragment {
 					nextFragment = new ClientFragment();
 					break;
 				}
+				parentActivity.setBeforeContainer(R.id.container);
 				parentActivity.setStartFragment(nextFragment);
 				parentActivity.getSupportFragmentManager().beginTransaction().replace(R.id.container, nextFragment).commit();
 			}
