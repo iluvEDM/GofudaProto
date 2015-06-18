@@ -22,6 +22,7 @@ import android.view.ViewDebug.IntToString;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,7 +31,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-public class TruckCallFragment extends Fragment implements ListAdapter , OnServerManagerListener{
+public class TruckCallFragment extends Fragment implements   OnServerManagerListener{
 	
 //	private View mBackgroundView;
 	private MainActivity mParentActivity;
@@ -40,6 +41,8 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 	private ArrayList<View> mCallThumbnailArray;
 	private Button mTimeButton;
 	private GpsInfo mGPS;
+	private ArrayAdapter<View> adapter;
+	private BaseAdapter mAdapter;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -48,9 +51,50 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 		mContext = getActivity().getBaseContext();
 		mCallArray = new ArrayList<CallPaper>();
 		mCallThumbnailArray = new ArrayList<View>();
-		
+		    
+//		    listview.setAdapter(adapter);
+		mAdapter = new BaseAdapter() {
+			
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				// TODO Auto-generated method stub
+				CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbnailArray.get(position);
+				tmpView.setEventNumber(String.valueOf(position));
+				
+				
+				mCallThumbnailArray.get(position).setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						
+						Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT).show();
+					}
+				});
+				return mCallThumbnailArray.get(position);
+			}
+			
+			@Override
+			public long getItemId(int position) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+			@Override
+			public Object getItem(int position) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public int getCount() {
+				// TODO Auto-generated method stub
+				return mCallArray.size();
+			}
+		};
 		mEventListView = (ListView)getActivity().findViewById(R.id.event_list);
-		mEventListView.setAdapter(this);
+		
+		mEventListView.setAdapter(mAdapter);
 		mEventContainLayout = (LinearLayout)getActivity().findViewById(R.id.event_linear);
 		mTimeButton = (Button)getActivity().findViewById(R.id.call_time);
 	}
@@ -106,103 +150,8 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 	private String makeLocationToPositionString(double lat, double longitude){
 		return String.valueOf(lat)+","+String.valueOf(longitude);
 	}
-	@Override
-	public void registerDataSetObserver(DataSetObserver observer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void unregisterDataSetObserver(DataSetObserver observer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return mCallArray.size();
-	}
-
-	@Override
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbnailArray.get(position);
-		tmpView.setEventNumber(String.valueOf(position));
-		
-		mCallThumbnailArray.get(position).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-				Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT).show();
-			}
-		});
-		return mCallThumbnailArray.get(position);
-	}
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		
-		return 0;
-	}
-
-	@Override
-	public boolean hasStableIds() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	private void getRequestPaperInformation(){
 //		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_REQUEST, param, this);
-	}
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbnailArray.get(position);
-		tmpView.setEventNumber(String.valueOf(position));
-		
-		
-		mCallThumbnailArray.get(position).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-				Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT).show();
-			}
-		});
-		return mCallThumbnailArray.get(position);
-	}
-
-	@Override
-	public int getItemViewType(int position) {
-		// TODO Auto-generated method stub
-		return 1;
-	}
-
-	@Override
-	public int getViewTypeCount() {
-		// TODO Auto-generated method stub
-		return 1;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean areAllItemsEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled(int position) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
@@ -240,7 +189,7 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 			//주소 어떻게 얻어오지?
 			mCallThumbnailArray.add(tmpTNail);
 		}
-		mEventListView.invalidate();
+		mAdapter.notifyDataSetChanged();
 		
 	}
 

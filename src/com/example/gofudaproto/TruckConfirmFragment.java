@@ -1,5 +1,7 @@
 package com.example.gofudaproto;
 
+import com.example.gofudaproto.server.ServerManager;
+
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -24,11 +27,22 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 	private static final String ARG_PARAM2 = "param2";
 
 	// TODO: Rename and change types of parameters
+	public int current_request_id;
 	private String mParam1;
 	private String mParam2;
-
+	private MainActivity mParentActivity;
 	private OnFragmentInteractionListener mListener;
-
+	private TextView mEventName;
+	private TextView mPeopleNumber;
+	private TextView mDinningNumber;
+	private TextView mDesertNumber;
+	private TextView mBeverageNumber;
+	private TextView mEstimatedTime;
+	private Button mLocationButton;
+	private TextView mExtraRequirement;
+	private TextView mUseTime;
+	private TextView mArrivalTime;
+	private TextView mClientName;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -63,6 +77,36 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 	}
 
 	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+//		private TextView mEventName;
+//		private TextView mPeopleNumber;
+//		private TextView mDinningNumber;
+//		private TextView mDesertNumber;
+//		private TextView mBeverageNumber;
+//		private TextView mEstimatedTime;
+//		private Button mLocationButton;
+//		private TextView mExtraRequirement;
+//		private TextView mUseTime;
+//		private TextView mArrivalTime;
+//		private TextView mClientName;
+		mEventName = (TextView)getActivity().findViewById(R.id.call_event_name);
+		mPeopleNumber = (TextView)getActivity().findViewById(R.id.call_people_num);
+		mDinningNumber = (TextView)getActivity().findViewById(R.id.call_number_dining);
+		mDesertNumber = (TextView)getActivity().findViewById(R.id.call_number_desert);
+		mBeverageNumber = (TextView)getActivity().findViewById(R.id.call_number_beverage);
+		mEstimatedTime = (TextView)getActivity().findViewById(R.id.call_estimated_time);
+		mLocationButton = (Button)getActivity().findViewById(R.id.call_button_location);
+		mExtraRequirement = (TextView)getActivity().findViewById(R.id.call_extra_require);
+		mUseTime = (TextView)getActivity().findViewById(R.id.call_duration);
+		mArrivalTime = (TextView)getActivity().findViewById(R.id.call_arrival_time);
+		mClientName = (TextView)getActivity().findViewById(R.id.call_client);
+		
+		
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.callpaper_detail, container, false);
@@ -74,7 +118,17 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 			mListener.onFragmentInteraction(uri);
 		}
 	}
+	public void sendGetRequestInformationCall(){
+//		mParentActivity.getServerManager().doSendCall(ServerManager.CANCEL_REQUEST, makeCancelParams(), this);
+	}
+	private String makeGetRequestsParams(int truck_id, double lat, double longitude){
 
+//		return "{"+mParentActivity.makeIndexString("truck_id")+":"+ mParentActivity.makeIndexString(String.valueOf(truck_id)) + ","+mParentActivity.makeIndexString("position")+":"+mParentActivity.makeIndexString(makeLocationToPositionString(lat, longitude)) +"}";
+		return null;
+	}
+	private String makeIndexString(String word){
+		return " \""+word+"\"";
+	}
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
