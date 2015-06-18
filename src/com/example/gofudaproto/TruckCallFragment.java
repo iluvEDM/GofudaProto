@@ -214,6 +214,9 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 			
 			for(int i=0; i<array.length();i++){
 				JSONObject jobj = array.getJSONObject(i);
+				
+				//request_id, name, etc 순의 어레이입니다.
+				
 				int request_id = jobj.getInt("request_id");
 				String name = jobj.getString("name");
 				String etc = jobj.getString("etc");
