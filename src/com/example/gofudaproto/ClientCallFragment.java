@@ -145,6 +145,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	private void loadReadyTrucksFromServer(){
 		// TODO: 서버에서 현재 준비된 트럭 정보를 얻어온 뒤 iteration마다 addTruckToComingTruckList()를 통해 mReadyTrucks에 트럭 정보를 추가한다.
 		int request_id = mPreference.getInt(mParentActivity.CLIENT_REQUEST_ID_INDEX, 0);
+		String param =  makeShowingTrucksParameter(request_id);
 		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMING_TRUCKS, makeShowingTrucksParameter(request_id), this);
 		mFrameLayout.addView(mProgressBar);
 	}

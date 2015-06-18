@@ -43,6 +43,7 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 	private GpsInfo mGPS;
 	private ArrayAdapter<View> adapter;
 	private BaseAdapter mAdapter;
+	private TruckConfirmFragment mConfirmFragment;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -68,6 +69,10 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
 						
+						setThisFragmentStartFragment();
+						int index = mCallThumbnailArray.indexOf(v);
+						mConfirmFragment.current_request_id = mCallArray.get(index).getCallId();
+						getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.call_contain, mConfirmFragment).commit();
 						Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT).show();
 					}
 				});
@@ -112,6 +117,7 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		mConfirmFragment = new TruckConfirmFragment();
 	}
 
 	@Override
@@ -123,7 +129,12 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 	}
 
 	private Context mContext;
-	
+	public void setThisFragmentStartFragment(){
+		mParentActivity.setPrevFragment(this);
+		mParentActivity.setIsHaveToBackFragment(true);
+		mParentActivity.setBeforeContainer(R.id.call_contain);
+	}
+
 //	private void updateCallinEventView(){
 //		getCallPapersFromServer();
 //		int currentY = 0;

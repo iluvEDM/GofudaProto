@@ -1,14 +1,23 @@
 package com.example.gofudaproto;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.example.gofudaproto.server.ServerManager;
+import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,7 +29,7 @@ import android.widget.TextView;
  * of this fragment.
  *
  */
-public class TruckConfirmFragment extends android.support.v4.app.Fragment {
+public class TruckConfirmFragment extends android.support.v4.app.Fragment implements OnServerManagerListener{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
@@ -43,6 +52,8 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 	private TextView mUseTime;
 	private TextView mArrivalTime;
 	private TextView mClientName;
+	private Button mConfirmButton;
+	private boolean isGoSign = false;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -74,23 +85,31 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
+		mParentActivity = (MainActivity)getActivity();
 	}
 
+	public void setRequestData(int id, int customer_id, int state, String name,int size, String position, String time, String need_time, String etc, String truck_count){
+		mEventName.setText(name);
+		mPeopleNumber.setText(String.valueOf(size));
+		setMenuNumbers(truck_count);
+		mEstimatedTime.setText(time);
+		mClientName.setText("someone");
+		mExtraRequirement.setText(etc);
+		mUseTime.setText(need_time);
+		mArrivalTime.setText(time);
+	}
+	public void setMenuNumbers(String count_string){
+		String sub = count_string.substring(1, count_string.length()-1);
+		String[] tokens = sub.split(",");
+		mDinningNumber.setText(tokens[0]);
+		mDesertNumber.setText(tokens[1]);
+		mBeverageNumber.setText(tokens[2]);
+	}
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-//		private TextView mEventName;
-//		private TextView mPeopleNumber;
-//		private TextView mDinningNumber;
-//		private TextView mDesertNumber;
-//		private TextView mBeverageNumber;
-//		private TextView mEstimatedTime;
-//		private Button mLocationButton;
-//		private TextView mExtraRequirement;
-//		private TextView mUseTime;
-//		private TextView mArrivalTime;
-//		private TextView mClientName;
+		
 		mEventName = (TextView)getActivity().findViewById(R.id.call_event_name);
 		mPeopleNumber = (TextView)getActivity().findViewById(R.id.call_people_num);
 		mDinningNumber = (TextView)getActivity().findViewById(R.id.call_number_dining);
@@ -102,10 +121,30 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 		mUseTime = (TextView)getActivity().findViewById(R.id.call_duration);
 		mArrivalTime = (TextView)getActivity().findViewById(R.id.call_arrival_time);
 		mClientName = (TextView)getActivity().findViewById(R.id.call_client);
+		mConfirmButton = (Button)getActivity().findViewById(R.id.button_confirm);
 		
+		mConfirmButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				sendGoRequest();
+				
+			}
+		});
+		sendGetRequestInformationCall();
 		
 	}
-
+	//원랜 1이아니라 트럭아이디를 넣어야 합니
+	public void sendGoRequest(){
+		mParentActivity.getServerManager().doSendCall(ServerManager.SEND_TRUCK_GO_REQUEST, makeGoRequestParams(1,current_request_id), this);
+		isGoSign = true;
+	}
+	
+	public String makeGoRequestParams(int truck_id, int request_id){
+		return "{"+makeIndexString("truck_id")+":"+ makeIndexString(String.valueOf(truck_id)) 
+				+makeIndexString("request_id")+":"+ makeIndexString(String.valueOf(request_id)) +"}";
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -119,12 +158,11 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 		}
 	}
 	public void sendGetRequestInformationCall(){
-//		mParentActivity.getServerManager().doSendCall(ServerManager.CANCEL_REQUEST, makeCancelParams(), this);
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_REQUEST, makeGetRequestsParams(current_request_id), this);
 	}
-	private String makeGetRequestsParams(int truck_id, double lat, double longitude){
+	private String makeGetRequestsParams(int request_id){
 
-//		return "{"+mParentActivity.makeIndexString("truck_id")+":"+ mParentActivity.makeIndexString(String.valueOf(truck_id)) + ","+mParentActivity.makeIndexString("position")+":"+mParentActivity.makeIndexString(makeLocationToPositionString(lat, longitude)) +"}";
-		return null;
+		return "{"+makeIndexString("id")+":"+ makeIndexString(String.valueOf(request_id)) +"}";
 	}
 	private String makeIndexString(String word){
 		return " \""+word+"\"";
@@ -158,6 +196,57 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment {
 	public interface OnFragmentInteractionListener {
 		// TODO: Update argument type and name
 		public void onFragmentInteraction(Uri uri);
+	}
+
+	@Override
+	public void serverDidEnd(String result) {
+		// TODO Auto-generated method stub
+		if(isGoSign && result!= null){
+			showSettingsAlert();
+			getActivity().onBackPressed();
+		}else{
+			try {
+				JSONObject jobj = new JSONObject(result);
+				int id = jobj.getInt("id");
+				int customer_id = jobj.getInt("customer_id");
+				int state = jobj.getInt("state");
+				String name = jobj.getString("name");
+				int size = jobj.getInt("size");
+				String position = jobj.getString("position");
+				String time = jobj.getString("time");
+				String need_time = jobj.getString("need_time");
+				String etc = jobj.getString("etc");
+				String truck_count = jobj.getString("truck_count");
+
+
+				setRequestData(id, customer_id, state, name, size, position, time, need_time, etc, truck_count);
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	public void showSettingsAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mParentActivity.getMainContext());
+ 
+        alertDialog.setTitle("요청서");
+        alertDialog.setMessage("요청서가 성공적으로 수락 되었습니다.");
+   
+        // OK 를 누르게 되면 설정창으로 이동합니다. 
+        alertDialog.setPositiveButton("확인", 
+                                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+            	dialog.cancel();
+            }
+        });
+ 
+        alertDialog.show();
+    }
+	@Override
+	public void serverDidError(String error) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

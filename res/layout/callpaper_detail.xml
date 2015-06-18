@@ -292,6 +292,13 @@
                     android:text=" somebody "
                     android:textSize="10pt" />
             </LinearLayout>
+            
         </LinearLayout>
     </ScrollView>
+    <Button 
+        android:id="@+id/button_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:text="OK"/>
 </FrameLayout>
