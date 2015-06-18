@@ -73,6 +73,14 @@ public class ClientFragment extends Fragment implements OnClickListener{
 		getActivity().getSupportFragmentManager().beginTransaction()
 		.replace(R.id.client_container, mCallFragment).commit();
 		mParentActivity.setHaveToBack(true);
+		mCallButton = (Button)getActivity().findViewById(R.id.bt_call);
+		mMenuButton = (Button)getActivity().findViewById(R.id.bt_menu);
+		mReviewButton = (Button)getActivity().findViewById(R.id.bt_review);
+		mProfileButton = (Button)getActivity().findViewById(R.id.bt_profile);
+		mCallButton.setOnClickListener(this);
+		mMenuButton.setOnClickListener(this);
+		mReviewButton.setOnClickListener(this);
+		mProfileButton.setOnClickListener(this);
 	}
 
 	@Override

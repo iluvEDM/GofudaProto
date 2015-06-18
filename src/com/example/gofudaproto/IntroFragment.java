@@ -109,7 +109,7 @@ public class IntroFragment extends Fragment {
 					break;
 				}
 				parentActivity.setBeforeContainer(R.id.container);
-				
+				setThisFragmentStartFragment();
 				parentActivity.getSupportFragmentManager().beginTransaction().replace(R.id.container, nextFragment).commit();
 			}
 		};

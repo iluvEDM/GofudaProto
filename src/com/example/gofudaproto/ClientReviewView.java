@@ -9,12 +9,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ClientReviewView extends LinearLayout {
-	
+	public static interface SendReviewListener {
+		void sendThisReviewToServer(int id, String content);
+	}
 	private TextView mName;
-	
+	private SendReviewListener mListener;
 	private TextView mStar;
 	private EditText mDescription;
 	private Button mRegisterButton;
+	public int truck_id=0;
+	public int request_id=0;
+	public int customer_id=0;
+	public int id=0;
+	public void setReviewListener(SendReviewListener listener){
+		mListener = listener;
+	}
 	public ClientReviewView(Context context) {
 		super(context);
 		init();
@@ -30,15 +39,13 @@ public class ClientReviewView extends LinearLayout {
 		this.mDescription.setText("description");
 		
 		mRegisterButton.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+				mListener.sendThisReviewToServer(id, mDescription.getText().toString());
 			}
 		});
 		
-//		this.setBackgroundColor(Color.BLUE);
 	}
 	
 	public TextView getName() {
@@ -59,6 +66,5 @@ public class ClientReviewView extends LinearLayout {
 	public void setStar(String number) {
 		this.mStar.setText(number);
 	}
-	
 	
 }

@@ -2,6 +2,14 @@ package com.example.gofudaproto;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.example.gofudaproto.ClientReviewView.SendReviewListener;
+import com.example.gofudaproto.server.ServerManager;
+import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -10,9 +18,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView.FindListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -24,7 +34,7 @@ import android.widget.ListView;
  * of this fragment.
  *
  */
-public class ClientReviewFragment extends android.support.v4.app.Fragment implements ListAdapter{
+public class ClientReviewFragment extends android.support.v4.app.Fragment implements OnServerManagerListener,SendReviewListener{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
@@ -37,10 +47,13 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 	private OnFragmentInteractionListener mListener;
 	
 	private ListView mListView;
-	
+	private MainActivity mParentActivity;
 	private int mRequestID = 0;
 	private BaseAdapter mAdapter;
-	
+	private Button mSelectMealButton;
+	private Button mSelectDesertButton;
+	private Button mSelectBeverageButton;
+	private OnClickListener mButtonListener;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -72,13 +85,40 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);		
 		}
+		mParentActivity = (MainActivity)getActivity();
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		
+		mSelectMealButton = (Button)getActivity().findViewById(R.id.review_client_meal);
+		mSelectDesertButton = (Button)getActivity().findViewById(R.id.review_client_desert);
+		mSelectBeverageButton = (Button)getActivity().findViewById(R.id.review_client_beverage);
+		mButtonListener = new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				switch (v.getId()) {
+				case R.id.review_client_meal:
+					filteringReviewsByTruckType(Truck.TruckType.MEAL);
+					break;
+				case R.id.review_client_desert:
+					filteringReviewsByTruckType(Truck.TruckType.DESERT);
+					break;
+				case R.id.review_client_beverage:
+					filteringReviewsByTruckType(Truck.TruckType.BEVERAGE);
+					break;
+
+				default:
+					break;
+				}
+			}
+		};
+		mSelectMealButton.setOnClickListener(mButtonListener);
+		mSelectDesertButton.setOnClickListener(mButtonListener);
+		mSelectBeverageButton.setOnClickListener(mButtonListener);
 		mRequestID = getActivity().getSharedPreferences("gopuda", Context.MODE_PRIVATE).getInt(MainActivity.CLIENT_REQUEST_ID_INDEX, 0);
 		mReviewViewArray = new ArrayList<>();
 		mAdapter = new BaseAdapter() {
@@ -109,6 +149,7 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 		};	
 		mListView = (ListView)getActivity().findViewById(R.id.review_detail_list);
 		mListView.setAdapter(mAdapter);
+		getAllReviewsFromServer();
 	}
 	
 	@Override
@@ -127,14 +168,21 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 	}
 
 	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		mParentActivity.setIsHaveToStartFragment(true);
+	}
+
+	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		try {
-			mListener = (OnFragmentInteractionListener) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnFragmentInteractionListener");
-		}
+//		try {
+//			mListener = (OnFragmentInteractionListener) activity;
+//		} catch (ClassCastException e) {
+//			throw new ClassCastException(activity.toString()
+//					+ " must implement OnFragmentInteractionListener");
+//		}
 	}
 
 	@Override
@@ -142,11 +190,16 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 		super.onDetach();
 		mListener = null;
 	}
-	
-	public void getAllReviewsFromServer(){
-		
+	private String makeIndexString(String word){
+		return " \""+word+"\"";
 	}
-	public void filteringReviewsByTruckType(String type){
+	public void getAllReviewsFromServer(){
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMMENT_TARGETS, makeCommentTargetParams(mRequestID), this);
+	}
+	public String makeCommentTargetParams(int request_id){
+		return "{"+ makeIndexString("request_id") + ":"+makeIndexString(String.valueOf(request_id)) +"}";
+	}
+	public void filteringReviewsByTruckType(Truck.TruckType type){
 		
 	}
 	/**
@@ -162,78 +215,60 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 		// TODO: Update argument type and name
 		public void onFragmentInteraction(Uri uri);
 	}
+	@Override
+	public void serverDidEnd(String result) {
+		// TODO Auto-generated method stub
+		try {
+			JSONArray array = new JSONArray(result);
+			for (int i = 0; i < array.length() ; i++) {
+				JSONObject jobj = array.getJSONObject(i);
+//				 "id"=>$input["id"],
+//					        "truck_id"=>$input["truck_id"],
+//					        "request_id"=>$input["request_id"],
+//					        "customer_id"=>$input["customer_id"],
+//					        "star"=>$input["star"],
+//					        "content"=>$input["content"],
+//					        "reply"=>$input["reply"],
+//					        "time"=>$input["time"]
+				int id = jobj.getInt("id");
+				int truck_id = jobj.getInt("truck_id");
+				int request_id = jobj.getInt("request_id");
+				int customer_id = jobj.getInt("customer_id");
+				int star = jobj.getInt("star");
+				String content = jobj.getString("content");
+				String reply = jobj.getString("reply");
+				int time = jobj.getInt("time");
+				ClientReviewView crv = new ClientReviewView(mParentActivity.getApplicationContext());
+				crv.id = id;
+				crv.truck_id = truck_id;
+				crv.request_id = request_id;
+				crv.customer_id = customer_id;
+				crv.setStar(String.valueOf(star));
+				crv.setDescription(content);
+				mReviewViewArray.add(crv);
+			}
+			
+			mAdapter.notifyDataSetChanged();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	@Override
-	public void registerDataSetObserver(DataSetObserver observer) {
+	public void serverDidError(String error) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void unregisterDataSetObserver(DataSetObserver observer) {
+	public void sendThisReviewToServer(int id, String content) {
 		// TODO Auto-generated method stub
-		
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMMENT_TARGETS, makeCommentTargetParams(mRequestID), this);
 	}
-
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean hasStableIds() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		
-		return mReviewViewArray.get(position);
-	}
-
-	@Override
-	public int getItemViewType(int position) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getViewTypeCount() {
-		// TODO Auto-generated method stub
-		return mReviewViewArray.size();
-	}
-
-	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean areAllItemsEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled(int position) {
-		// TODO Auto-generated method stub
-		return false;
+	public String makeRegisterReviewParam(int id,String content){
+		return "{"+ makeIndexString("id") + ":"+makeIndexString(String.valueOf(id)) 
+				+ makeIndexString("content") + ":"+makeIndexString(content) +"}";
 	}
 
 }

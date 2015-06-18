@@ -69,7 +69,7 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
 						
-						setThisFragmentStartFragment();
+						setThisFragmentPrevFragment();
 						int index = mCallThumbnailArray.indexOf(v);
 						mConfirmFragment.current_request_id = mCallArray.get(index).getCallId();
 						getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.call_contain, mConfirmFragment).commit();
@@ -110,6 +110,7 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 		super.onStart();
 		
 //		updateCallinEventView();
+		mParentActivity.setIsHaveToStartFragment(true);
 		getCallPapersFromServer();
 	}
 
@@ -129,7 +130,7 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 	}
 
 	private Context mContext;
-	public void setThisFragmentStartFragment(){
+	public void setThisFragmentPrevFragment(){
 		mParentActivity.setPrevFragment(this);
 		mParentActivity.setIsHaveToBackFragment(true);
 		mParentActivity.setBeforeContainer(R.id.call_contain);
