@@ -3,14 +3,18 @@ package com.example.gofudaproto;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
+import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 
 /**
  * A simple {@link Fragment} subclass. Activities that contain this fragment
@@ -31,6 +35,11 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 	private String mParam2;
 	private ArrayList<ClientReviewView> mReviewViewArray;
 	private OnFragmentInteractionListener mListener;
+	
+	private ListView mListView;
+	
+	private int mRequestID = 0;
+	private BaseAdapter mAdapter;
 	
 	/**
 	 * Use this factory method to create a new instance of this fragment using
@@ -61,10 +70,47 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 		super.onCreate(savedInstanceState);
 		if (getArguments() != null) {
 			mParam1 = getArguments().getString(ARG_PARAM1);
-			mParam2 = getArguments().getString(ARG_PARAM2);
+			mParam2 = getArguments().getString(ARG_PARAM2);		
 		}
 	}
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		
+		mRequestID = getActivity().getSharedPreferences("gopuda", Context.MODE_PRIVATE).getInt(MainActivity.CLIENT_REQUEST_ID_INDEX, 0);
+		mReviewViewArray = new ArrayList<>();
+		mAdapter = new BaseAdapter() {
+			
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				// TODO Auto-generated method stub
+				return mReviewViewArray.get(position);
+			}
+			
+			@Override
+			public long getItemId(int position) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+			@Override
+			public Object getItem(int position) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public int getCount() {
+				// TODO Auto-generated method stub
+				return mReviewViewArray.size();
+			}
+		};	
+		mListView = (ListView)getActivity().findViewById(R.id.review_detail_list);
+		mListView.setAdapter(mAdapter);
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
