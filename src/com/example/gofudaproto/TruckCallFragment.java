@@ -95,7 +95,7 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 	
 	private void getCallPapersFromServer(){
 		String param = makeGetRequestsParams(1, mParentActivity.getGPS().getLatitude(), mParentActivity.getGPS().getLongitude());
-		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_INCOMPLETE_REQUESTS, makeGetRequestsParams(900917, mParentActivity.getGPS().getLatitude(), mParentActivity.getGPS().getLongitude()), this);
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_INCOMPLETE_REQUESTS, makeGetRequestsParams(1, mParentActivity.getGPS().getLatitude(), mParentActivity.getGPS().getLongitude()), this);
 		
 	}
 	
