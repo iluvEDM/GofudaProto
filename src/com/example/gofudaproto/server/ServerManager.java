@@ -12,9 +12,11 @@ import java.net.URLEncoder;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.widget.ListView;
 
 import com.example.gofudaproto.MyApplication;
 
@@ -128,6 +130,11 @@ public class ServerManager
 			listener.serverDidError("network error");
 		}
 	}
+	
+	public Drawable loadImage(String imageName) {
+		return null;
+	}
+	
 	
 
 	public static boolean isNetworkStat(Context context) {
