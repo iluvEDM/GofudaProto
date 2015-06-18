@@ -3,6 +3,10 @@ package com.example.gofudaproto;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.example.gofudaproto.R;
 import com.example.gofudaproto.server.ServerManager;
 import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
@@ -35,6 +39,7 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 	private ArrayList<CallPaper> mCallArray;
 	private ArrayList<View> mCallThumbnailArray;
 	private Button mTimeButton;
+	private GpsInfo mGPS;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -43,22 +48,20 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 		mContext = getActivity().getBaseContext();
 		mCallArray = new ArrayList<CallPaper>();
 		mCallThumbnailArray = new ArrayList<View>();
-		getCallPapersFromServer();
+		
+		mEventListView = (ListView)getActivity().findViewById(R.id.event_list);
+		mEventListView.setAdapter(this);
+		mEventContainLayout = (LinearLayout)getActivity().findViewById(R.id.event_linear);
+		mTimeButton = (Button)getActivity().findViewById(R.id.call_time);
 	}
 
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		mEventListView = (ListView)getActivity().findViewById(R.id.event_list);
-		mEventListView.setAdapter(this);
-//		mWentEventView.setLayoutParams(new LayoutParams(getView().getWidth(), getView().getHeight()*5/7));
-		mEventContainLayout = (LinearLayout)getActivity().findViewById(R.id.event_linear);
-//		mEventContainLayout.setLayoutParams(new LayoutParams(mWentEventView.getWidth(), mWentEventView.getHeight()));
-//		mEventContainLayout.setOrientation(LinearLayout.VERTICAL);
-		mTimeButton = (Button)getActivity().findViewById(R.id.call_time);
 		
 //		updateCallinEventView();
+		getCallPapersFromServer();
 	}
 
 	@Override
@@ -89,19 +92,18 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 //	}
 	
 	private void getCallPapersFromServer(){
-//		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_INCOMPLETE_REQUESTS, param, this);
-		for(int i=0; i<10 ; i++){
-			mCallArray.add(new CallPaper());
-		}
-		for(int i=0; i<mCallArray.size();i++){
-			CallThumbNailView tmpTNail = new CallThumbNailView(mContext);
-			tmpTNail.setLayoutParams(new AbsListView.LayoutParams(getActivity().getWindow().getAttributes().width, 150));
-			tmpTNail.setName(mCallArray.get(i).getEventName());
-			//주소 어떻게 얻어오지?
-			mCallThumbnailArray.add(tmpTNail);
-		}
+		String param = makeGetRequestsParams(900917, mParentActivity.getGPS().getLatitude(), mParentActivity.getGPS().getLongitude());
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_INCOMPLETE_REQUESTS, makeGetRequestsParams(900917, mParentActivity.getGPS().getLatitude(), mParentActivity.getGPS().getLongitude()), this);
+		
 	}
-
+	
+	private String makeGetRequestsParams(int truck_id, double lat, double longitude){
+		
+		return "{"+mParentActivity.makeIndexString("truck_id")+":"+ mParentActivity.makeIndexString(String.valueOf(truck_id)) + ","+mParentActivity.makeIndexString("position")+":"+mParentActivity.makeIndexString(makeLocationToPositionString(lat, longitude)) +"}";
+	}
+	private String makeLocationToPositionString(double lat, double longitude){
+		return String.valueOf(lat)+","+String.valueOf(longitude);
+	}
 	@Override
 	public void registerDataSetObserver(DataSetObserver observer) {
 		// TODO Auto-generated method stub
@@ -123,9 +125,20 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 	@Override
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
-		return null;
+		CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbnailArray.get(position);
+		tmpView.setEventNumber(String.valueOf(position));
+		
+		mCallThumbnailArray.get(position).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				Toast.makeText(mContext, "call paper clicked", Toast.LENGTH_SHORT).show();
+			}
+		});
+		return mCallThumbnailArray.get(position);
 	}
-
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
@@ -163,13 +176,13 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 	@Override
 	public int getItemViewType(int position) {
 		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 	@Override
 	public int getViewTypeCount() {
 		// TODO Auto-generated method stub
-		return mCallArray.size();
+		return 1;
 	}
 
 	@Override
@@ -193,6 +206,34 @@ public class TruckCallFragment extends Fragment implements ListAdapter , OnServe
 	@Override
 	public void serverDidEnd(String result) {
 		// TODO Auto-generated method stub
+		
+		try {
+			JSONArray array = new JSONArray(result);
+			
+			for(int i=0; i<array.length();i++){
+				JSONObject jobj = array.getJSONObject(i);
+				int request_id = jobj.getInt("request_id");
+				String name = jobj.getString("name");
+				String etc = jobj.getString("etc");
+				CallPaper cp = new CallPaper();
+				cp.setEventName(name);
+				cp.setCallLocation(etc);
+				cp.setCallId(request_id);
+				mCallArray.add(cp);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(int i=0; i<mCallArray.size();i++){
+			CallThumbNailView tmpTNail = new CallThumbNailView(mContext);
+			tmpTNail.setLayoutParams(new AbsListView.LayoutParams(getActivity().getWindow().getAttributes().width, 150));
+			tmpTNail.setName(mCallArray.get(i).getEventName());
+			tmpTNail.setLocation(mCallArray.get(i).getCallLocation());
+			//주소 어떻게 얻어오지?
+			mCallThumbnailArray.add(tmpTNail);
+		}
+		mEventListView.invalidate();
 		
 	}
 

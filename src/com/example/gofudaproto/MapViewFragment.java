@@ -1,22 +1,35 @@
 package com.example.gofudaproto;
 
+import java.util.List;
+
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapPoint.GeoCoordinate;
 import net.daum.mf.map.api.MapView;
+import net.daum.mf.map.api.MapView.MapViewEventListener;
+import net.daum.mf.map.api.MapView.POIItemEventListener;
 
 import com.nhn.android.maps.NMapView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.internal.widget.ViewUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass. Activities that contain this fragment
@@ -26,7 +39,7 @@ import android.widget.RelativeLayout;
  * this fragment.
  *
  */
-public class MapViewFragment extends Fragment {
+public class MapViewFragment extends Fragment implements MapViewEventListener,MapView.POIItemEventListener{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
@@ -39,8 +52,12 @@ public class MapViewFragment extends Fragment {
 	private OnFragmentInteractionListener mListener;
 	private MainActivity mParentActivity;
 	private MapView mMapView;
-	private RelativeLayout mMainLayout;
-	
+	private FrameLayout mMainLayout;
+	private Button mConfirmLocationButton;
+	MapPOIItem marker;
+	private Button mSearchButton;
+	private EditText mSearchText;
+	private LinearLayout mMapLayout;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -64,35 +81,116 @@ public class MapViewFragment extends Fragment {
 	public MapViewFragment() {
 		// Required empty public constructor
 	}
-	
+	MapPoint currentPoint;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		
-		mMainLayout = (RelativeLayout)getActivity().findViewById(R.id.map_mainlayout);
-		
-		MapPoint currentPoint = MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633);
+		mMainLayout = (FrameLayout)getActivity().findViewById(R.id.map_mainlayout);
+		mMapLayout = (LinearLayout)getActivity().findViewById(R.id.map_layout);
+		currentPoint = MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633);
 		if(isHaveToCurrentLocation){
 			if(mParentActivity.getCurrentLocation() != null){
 				mMapView.setMapCenterPoint(mParentActivity.getCurrentLocation(), true);
 				currentPoint = mParentActivity.getCurrentLocation();
 			}
 		}
-		MapPOIItem marker = new MapPOIItem();
+		marker = new MapPOIItem();
 		marker.setItemName("Default Marker");
 		marker.setTag(0);
 		marker.setMapPoint(currentPoint);
 		marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
-		marker.setMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+//		marker.setMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
 		mMapView.addPOIItem(marker);
+		mMapView.setPOIItemEventListener(this);
 //		getActivity().getSupportFragmentManager().beginTransaction()
 //		.replace(R.id.client_container, mCallFragment).commit();
 		mParentActivity.setHaveToBack(true);
+		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(100, 100);
+		mConfirmLocationButton = new Button(getActivity().getBaseContext());
+		mConfirmLocationButton.setLayoutParams( new LayoutParams(LayoutParams.WRAP_CONTENT, 100));
+		mConfirmLocationButton.setText("drag");
+		params = new FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, android.widget.FrameLayout.LayoutParams.WRAP_CONTENT);
+		params.gravity = Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL;
+		mConfirmLocationButton.setLayoutParams(params);
+		mConfirmLocationButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			}
+		});
+		mMapView.setMapViewEventListener(this);
+		mSearchText =(EditText)getActivity().findViewById(R.id.map_search);
+		
+		mSearchButton = (Button)getActivity().findViewById(R.id.map_search_button);
+		mSearchButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				String query = mSearchText.getText().toString();
+				if (query == null || query.length() == 0) {
+					Toast.makeText(getActivity().getApplicationContext(), "please insert search text", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+					      Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);// 키보드 숨김
+				GeoCoordinate geoCoordinate = currentPoint.getMapPointGeoCoord();
+				double latitude = geoCoordinate.latitude; // 위도
+				double longitude = geoCoordinate.longitude; // 경도
+				int radius = 10000; // 중심 좌표부터의 반경거리. 특정 지역을 중심으로 검색하려고 할 경우 사용. meter 단위 (0 ~ 10000)
+				int page = 1; // 페이지 번호 (1 ~ 3). 한페이지에 15개
+				Searcher searcher = new Searcher(); // net.daum.android.map.openapi.search.Searcher
+				searcher.searchKeyword(getActivity().getApplicationContext(), query, latitude, longitude, radius, page, mParentActivity.API_KEY, new OnFinishSearchListener() {
+					@Override
+					public void onSuccess(List<Item> itemList) {
+						mMapView.removeAllPOIItems(); // 기존 검색 결과 삭제
+						showResult(itemList); // 검색 결과 보여줌 
+					}
+					
+					@Override
+					public void onFail() {
+						Toast.makeText(getActivity().getApplicationContext(), "api error", Toast.LENGTH_SHORT).show();
+					}
+				});
+			}
+		});
 		
 		
 		
+	}
+	private void showResult(List<Item> itemList) {
+//		MapPointBounds mapPointBounds = new MapPointBounds();
 		
+		for (int i = 0; i < itemList.size(); i++) {
+			Item item = itemList.get(i);
+
+			MapPOIItem poiItem = new MapPOIItem();
+			poiItem.setItemName(item.title);
+			poiItem.setTag(i);
+			MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(item.latitude, item.longitude);
+			poiItem.setMapPoint(mapPoint);
+//			mapPointBounds.add(mapPoint);
+			poiItem.setMarkerType(MapPOIItem.MarkerType.BluePin);
+//			poiItem.setCustomImageResourceId(R.drawable.map_pin_blue);
+			poiItem.setMarkerType(MapPOIItem.MarkerType.BluePin);
+//			poiItem.setCustomSelectedImageResourceId(R.drawable.map_pin_red);
+//			poiItem.setCustomImageAutoscale(false);
+//			poiItem.setCustomImageAnchor(0.5f, 1.0f);
+			
+			mMapView.addPOIItem(poiItem);
+//			mTagItemMap.put(poiItem.getTag(), item);
+		}
+		
+//		mMapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds));
+		
+		MapPOIItem[] poiItems = mMapView.getPOIItems();
+		if (poiItems.length > 0) {
+			mMapView.selectPOIItem(poiItems[0], false);
+		}
 	}
 
 	@Override
@@ -125,10 +223,10 @@ public class MapViewFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onResume();
 		if(mMapView.getParent() == null){
-			mMainLayout.addView(mMapView);
+			mMapLayout.addView(mMapView);
 		}else{
 			((ViewGroup)mMapView.getParent()).removeView(mMapView);
-			mMainLayout.addView(mMapView);
+			mMapLayout.addView(mMapView);
 		}
 	}
 
@@ -165,6 +263,64 @@ public class MapViewFragment extends Fragment {
 
 	private void updateCurrentRequirements(){
 		
+	}
+
+	@Override
+	public void onMapViewCenterPointMoved(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMapViewDoubleTapped(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMapViewInitialized(MapView arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMapViewLongPressed(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+	private Searcher mSearcher;
+	@Override
+	public void onMapViewSingleTapped(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		marker.setMapPoint(arg1);
+		mMapView.removeAllPOIItems();
+		mMapView.addPOIItem(marker);
+	}
+
+	@Override
+	public void onMapViewZoomLevelChanged(MapView arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCalloutBalloonOfPOIItemTouched(MapView arg0, MapPOIItem arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDraggablePOIItemMoved(MapView arg0, MapPOIItem arg1,
+			MapPoint arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPOIItemSelected(MapView arg0, MapPOIItem arg1) {
+		// TODO Auto-generated method stub
+		currentPoint = arg1.getMapPoint();
+		Toast.makeText(getActivity().getApplicationContext(), "selected", Toast.LENGTH_SHORT).show();
 	}
 
 }

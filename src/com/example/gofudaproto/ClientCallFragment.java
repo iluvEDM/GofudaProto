@@ -49,7 +49,7 @@ import android.widget.Toast;
  * of this fragment.
  *
  */
-public class ClientCallFragment extends android.support.v4.app.Fragment implements ListAdapter,OnServerManagerListener{
+public class ClientCallFragment extends android.support.v4.app.Fragment implements OnServerManagerListener{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	
@@ -66,33 +66,14 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	private ArrayList<Truck> mReadyTrucks;
 	private boolean isCallCountZero;
 	private OnFragmentInteractionListener mListener;
-	private MapViewFragment mMapFragment;
-	private Button mSelectDining;
-	private Button mSelectDesert;
-	private Button mSelectBeverage;
-	private TextView mDiningNumberView;
-	private TextView mDesertNumberView;
-	private TextView mBeverageNumberView;
-	private OnClickListener mMenuSelectListener;
-	private LinearLayout mMenuLayout;
-	private LinearLayout mMasterLayout;
-	private Button mSelectCurrentLocationButton;
-	private Button mSelectLocationButton;
-	private Button mComeButton;
 	
-	private CallPaper mCurrentCallPaper;
-	private Button mDragButton;
-	private Button mCancelCallButton;
-	private NGeoPoint mSelectedLocation;
 	private FrameLayout mFrameLayout;
 	private ProgressBar mProgressBar;
-	private ClientViewTruckFragment mViewTruckDetailFragment;
-	private ListView mTruckListView;
 	private SharedPreferences mPreference;
 	private SharedPreferences.Editor mEditor;
 	
-	private boolean mIsSendRequest = false;
-	private boolean mIsShowTruckRequest = false;
+	private ClientMakeRequestFagment mRequestFragment;
+	private ClientShowTruckFragment mTruckListFragment;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -127,28 +108,16 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		mPreference = getActivity().getSharedPreferences("gopuda", Activity.MODE_PRIVATE);
 		mParentActivity = (MainActivity)getActivity();
 		mReadyTrucks = new ArrayList<Truck>();
-		mCallThumbNailArray = new ArrayList<CallThumbNailView>();
-//		updateClientCalls();
-		loadReadyTrucksFromServer();
-		if(mReadyTrucks.size()<1){
-			isCallCountZero = true;
-//			
-		}else{
-			isCallCountZero = false;
-		}
+		mRequestFragment = new ClientMakeRequestFagment();
+		mTruckListFragment = new ClientShowTruckFragment();
+		mTruckListFragment.initData();
 		
-		mMapFragment = new MapViewFragment();
-		mViewTruckDetailFragment = new ClientViewTruckFragment();
 
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		if(isCallCountZero){
-			return inflater.inflate(R.layout.client_callpaper_detail, container, false);	
-		}
-		
 		return inflater.inflate(R.layout.client_call, container, false);
 	}
 
@@ -163,7 +132,6 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		mMasterLayout = (LinearLayout)getActivity().findViewById(R.id.client_call_layout);
 		mFrameLayout = (FrameLayout)getActivity().findViewById(R.id.client_call_frame);
 		mProgressBar = new ProgressBar(getActivity().getApplicationContext(), null, android.R.attr.progressBarStyleLarge);
 		mProgressBar.setIndeterminate(true);
@@ -172,208 +140,25 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		params.gravity = Gravity.CENTER;
 		mParentActivity.setHaveToBackToStart(true);
 		mProgressBar.setLayoutParams(params);
-		if(isCallCountZero){
-			mSelectDining = (Button)getActivity().findViewById(R.id.call_button_dining);
-			mSelectDesert = (Button)getActivity().findViewById(R.id.call_button_desert);
-			mSelectBeverage = (Button)getActivity().findViewById(R.id.call_button_beverage);
-			mDiningNumberView = (TextView)getActivity().findViewById(R.id.call_number_dining);
-			mDesertNumberView = (TextView)getActivity().findViewById(R.id.call_number_desert);
-			mBeverageNumberView = (TextView)getActivity().findViewById(R.id.call_number_beverage);
-			mSelectLocationButton = (Button)getActivity().findViewById(R.id.call_button_location);
-			mSelectCurrentLocationButton = (Button)getActivity().findViewById(R.id.call_button_location_current);
-			mComeButton = (Button)getActivity().findViewById(R.id.call_button_come);
-			mMenuLayout = (LinearLayout)getActivity().findViewById(R.id.callpaper_container);
-			
-			// java code
-		}else{
-			mCancelCallButton = (Button)getActivity().findViewById(R.id.bt_event_cancel);
-			mTruckListView = (ListView)getActivity().findViewById(R.id.event_list);
-			mDragButton = new Button(getActivity().getBaseContext());
-			mDragButton.setLayoutParams( new LayoutParams(LayoutParams.WRAP_CONTENT, 100));
-			mDragButton.setText("drag");
-			params = new FrameLayout.LayoutParams(android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, android.widget.FrameLayout.LayoutParams.WRAP_CONTENT);
-			params.gravity = Gravity.RIGHT|Gravity.CENTER_VERTICAL;
-			mDragButton.setLayoutParams(params);
-			mDragButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-			mFrameLayout.addView(mDragButton);
-			mTruckListView.setAdapter(this);
-		}
-		mMenuSelectListener = new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				int currentNumber = 0;
-				switch(v.getId()){
-				case R.id.call_button_dining:
-					currentNumber = Integer.parseInt(mDiningNumberView.getText().toString());
-					currentNumber++;
-					mDiningNumberView.setText(String.valueOf(currentNumber));
-					break;
-				case R.id.call_button_desert:
-					currentNumber = Integer.parseInt(mDesertNumberView.getText().toString());
-					currentNumber++;
-					mDesertNumberView.setText(String.valueOf(currentNumber));
-					break;
-				case R.id.call_button_beverage:
-					currentNumber = Integer.parseInt(mBeverageNumberView.getText().toString());
-					currentNumber++;
-					mBeverageNumberView.setText(String.valueOf(currentNumber));
-					break;
-				case R.id.call_button_location_current:{
-					mMapFragment.isHaveToCurrentLocation = true;
-					mParentActivity.setBeforeContainer(R.id.client_container);
-					makeThisFragmentToPrevFragment();
-					getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.client_container, mMapFragment).commit();
-					break;
-				}
-				
-				case R.id.call_button_location:{
-					mMapFragment.isHaveToCurrentLocation = false;
-					mParentActivity.setBeforeContainer(R.id.client_container);
-					makeThisFragmentToPrevFragment();
-					getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.client_container, mMapFragment).commit();
-					break;
-				}
-				
-				case R.id.bt_event_cancel:
-					cancelTheCall();
-					break;
-				case R.id.call_button_come:
-					sendTheCall();
-					break;
-				}
-			}
-		};
-		if(isCallCountZero){
-			mSelectDining.setOnClickListener(mMenuSelectListener);
-			mSelectDesert.setOnClickListener(mMenuSelectListener);
-			mSelectBeverage.setOnClickListener(mMenuSelectListener);
-			mSelectCurrentLocationButton.setOnClickListener(mMenuSelectListener);
-			mSelectLocationButton.setOnClickListener(mMenuSelectListener);
-			mComeButton.setOnClickListener(mMenuSelectListener);
-		}else{
-		
-		mCancelCallButton.setOnClickListener(mMenuSelectListener);
-		}
-	}
-	private void makeThisFragmentToPrevFragment(){
-		mParentActivity.setPrevFragment(this);
-	}
-	private void sendTheCall(){
-		// TODO: 현재 제작된 요청서를 서버로 전달한다.
-		if(isHasNoMenuSelect()){
-			Toast.makeText(getActivity().getBaseContext(), "메뉴를 하나이상 선택해주세요", Toast.LENGTH_SHORT).show();
-		}else{
-			String param = makeMenuCallParameter();
-			mParentActivity.getServerManager().doSendCall(ServerManager.SEND_REQUEST, makeMenuCallParameter(), this);
-		}
-		mIsSendRequest = true;
-		mIsShowTruckRequest = false;
-		mFrameLayout.addView(mProgressBar);
-	}
-	private void cancelTheCall(){
-		// TODO: 현재보낸 요청을 취소하는 메세지를 서버로 전송한다.
-		mParentActivity.getServerManager().doSendCall(ServerManager.CANCEL_REQUEST, makeMenuCallParameter(), this);
+		loadReadyTrucksFromServer();
 	}
 	private void loadReadyTrucksFromServer(){
 		// TODO: 서버에서 현재 준비된 트럭 정보를 얻어온 뒤 iteration마다 addTruckToComingTruckList()를 통해 mReadyTrucks에 트럭 정보를 추가한다.
-		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMING_TRUCKS, makeShowingTrucksParameter(1234), this);
-		mIsShowTruckRequest = true;
-		mIsSendRequest = true;
+		int request_id = mPreference.getInt(mParentActivity.CLIENT_REQUEST_ID_INDEX, 0);
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMING_TRUCKS, makeShowingTrucksParameter(request_id), this);
+		mFrameLayout.addView(mProgressBar);
 	}
 	
-	private void addTruckToComingTruckList(int callID, String callDescription, String truckName , Truck.TruckType type){
-		Truck truck = new Truck();
-		truck.setReady(callID, callDescription, truckName, type);
-		
-		mReadyTrucks.add(truck);
-		CallThumbNailView ctView = new CallThumbNailView(getActivity().getApplicationContext());
-		ctView.setName(truckName);
-		ctView.setLocation(callDescription);
-		
-		mCallThumbNailArray.add(ctView);
-	}
-	
-	public boolean isHasNoMenuSelect(){
-		if(getDiningNumber()<1 && getDesertNumber()<1 && getBeverageNumber()<1){
-			return true;
-		}
-			return false;
-	}
-	private String makeCancelQuery(){
-		return "";
-	}
 	private String makeShowingTrucksParameter(int request_id){
 		return "{"+ makeIndexString("request_id") + ":"+makeIndexString(String.valueOf(request_id)) +"}";
 	}
-	private String makeMenuCallParameter(){
-		return "{" 
-				+ makeIndexString("customer_id") + ":" + makeIndexString("900917") + ","
-				+ makeIndexString("state") + ":" + makeIndexString("1") + ","
-				+ makeIndexString("name") + ":" + makeIndexString("hanyang") + ","
-				+ makeIndexString("size") + ":" + makeIndexString("10") + ","
-				+ makeIndexString("position") + ":" + makeIndexString("20,30") + ","
-				+ makeIndexString("need_time") + ":" + makeIndexString(makeTimeString(1, 10)) + ","
-				+ makeIndexString("etc") + ":" + makeIndexString("come on") + ","
-				+ makeIndexString("truck_count") + ":" + makeIndexString(makeTruckCountString()) + "}";
-	}
 	private String makeIndexString(String word){
 		return " \""+word+"\"";
-	}
-	private String makeTimeString(int hour, int minute){
-		String hourString ="";
-		String minuteString = "";
-		if(hour<10){
-			hourString = "0"+String.valueOf(hour);
-		}else{
-			hourString = String.valueOf(hour);
-		}
-		
-		if(minute<10){
-			minuteString = "0"+String.valueOf(minute);
-		}else{
-			minuteString = String.valueOf(minute);
-		}
-		
-		return hourString + ":" + minuteString + ":00";
-		
-	}
-	
-	private String makeTruckCountString(){
-		
-		return String.format("[%d,%d,%d]", getDiningNumber(),getDesertNumber(),getBeverageNumber());
-		
-//		return "["+"\""+getDiningNumber()+","+getDesertNumber()+","+getBeverageNumber()+"]";
-	}
-	public int getDiningNumber(){
-		return Integer.parseInt(mDiningNumberView.getText().toString());
-	}
-	
-	public int getDesertNumber(){
-		return Integer.parseInt(mDesertNumberView.getText().toString());
-	}
-	
-	public int getBeverageNumber(){
-		return Integer.parseInt(mBeverageNumberView.getText().toString());
 	}
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-//		try {
-//			mListener = (OnFragmentInteractionListener) activity;
-//		} catch (ClassCastException e) {
-//			throw new ClassCastException(activity.toString()
-//					+ " must implement OnFragmentInteractionListener");
-//		}
 	}
 
 	@Override
@@ -396,192 +181,56 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		public void onFragmentInteraction(Uri uri);
 	}
 	
-//	private void updateClientCalls(){
-//		for(int i = 0; i<10 ; i++){
-//			Truck t = new Truck();
-////			t.setReady(1234, "hi im truck");
-//			mReadyTrucks.add(t);
-//			
-//		}
-//	}
-
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return mReadyTrucks.size();
-	}
-
-	@Override
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbNailArray.get(position);
-		Truck tmpTruck = mReadyTrucks.get(position);
-		tmpView.setEventNumber(String.valueOf(position));
-		tmpView.setName(String.valueOf(tmpTruck.getName()));
-		tmpView.setLocation(tmpTruck.getDescription());
-		
-		mCallThumbNailArray.get(position).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Truck t = mReadyTrucks.get(mCallThumbNailArray.indexOf(v));
-				sendViewFoodTruckCall(t.getID());
-				Toast.makeText(getActivity().getBaseContext(), "call paper clicked", Toast.LENGTH_SHORT);
-				
-				getActivity().getSupportFragmentManager().beginTransaction()
-				.replace(R.id.client_container, mViewTruckDetailFragment).commit();
-			}
-		});
-		return mCallThumbNailArray.get(position);
-		
-	}
-	
 	public void setThisFragmentToPrev(){
 		mParentActivity.setPrevFragment(this);
 	}
 
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getItemViewType(int position) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbNailArray.get(position);
-		Truck tmpTruck = mReadyTrucks.get(position);
-		tmpView.setEventNumber(String.valueOf(position));
-		tmpView.setName(String.valueOf(tmpTruck.getName()));
-		tmpView.setLocation(tmpTruck.getDescription());
-		
-		mCallThumbNailArray.get(position).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Truck t = mReadyTrucks.get(mCallThumbNailArray.indexOf(v));
-				sendViewFoodTruckCall(t.getID());
-				Toast.makeText(getActivity().getBaseContext(), "call paper clicked", Toast.LENGTH_SHORT);
-				mParentActivity.setBeforeContainer(R.id.client_container);
-				mParentActivity.setHaveToBack(true);
-				setThisFragmentToPrev();
-				getActivity().getSupportFragmentManager().beginTransaction()
-				.replace(R.id.client_container, mViewTruckDetailFragment).commit();
-			}
-		});
-		return mCallThumbNailArray.get(position);
-		
-	}
-	public void sendReadyTruckListCall(){
-		
-	}
-	public void sendViewFoodTruckCall(int truck_id){
-//		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMING_TRUCKS, param, this);
-	}
-	public void sendGetRequestInformationCall(){
-		
-	}
-
-	@Override
-	public int getViewTypeCount() {
-		// TODO Auto-generated method stub
-		return mReadyTrucks.size();
-	}
-
-	@Override
-	public boolean hasStableIds() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void registerDataSetObserver(DataSetObserver observer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void unregisterDataSetObserver(DataSetObserver observer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean areAllItemsEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled(int position) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public void serverDidEnd(String result) {
 		// TODO Auto-generated method stub
 		mFrameLayout.removeView(mProgressBar);
-		if(mIsSendRequest){
-			if(result != null){
-				try {
-					JSONObject jobj = new JSONObject(result);
-					int request_id = jobj.getInt("request_id");
-					mParentActivity.CurrentClient.setCurrentRequest(request_id);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-		}else if(mIsShowTruckRequest){
-			if(result != null){
-				try {
-					JSONArray array = new JSONArray(result);
-					for(int i = 0; i<array.length(); i++){
-						JSONObject truck = array.getJSONObject(i);
-						String truck_name = truck.getString("name");
-						Truck.TruckType type;
-						switch (truck.getInt("type")) {
-						case 0:
-							type = Truck.TruckType.MEAL;
-							break;
-						case 1:
-							type = Truck.TruckType.DESERT;
-							break;
-						case 2:
-							type = Truck.TruckType.BEVERAGE;
-							break;
-						default:
-							type = Truck.TruckType.MEAL;
-							break;
-						}
-						int truck_id = truck.getInt("id");
-						String description = truck.getString("description");
-						addTruckToComingTruckList(truck_id, description, truck_name, type);
+		if(result != null){
+			try {
+
+				JSONArray array = new JSONArray(result);
+				for(int i = 0; i<array.length(); i++){
+					JSONObject truck = array.getJSONObject(i);
+					String truck_name = truck.getString("name");
+					Truck.TruckType type;
+					switch (truck.getInt("type")) {
+					case 0:
+						type = Truck.TruckType.MEAL;
+						break;
+					case 1:
+						type = Truck.TruckType.DESERT;
+						break;
+					case 2:
+						type = Truck.TruckType.BEVERAGE;
+						break;
+					default:
+						type = Truck.TruckType.MEAL;
+						break;
 					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					int truck_id = truck.getInt("id");
+					String description = truck.getString("description");
+					mTruckListFragment.addTruckToComingTruckList(truck_id, description, truck_name, type);
 				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+		}	
+
+		if(!mTruckListFragment.isTruckEmpty()){
+			mParentActivity.setIsHaveToStartFragment(true);
+			
+			getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.client_container, mTruckListFragment).commit();
+		}else{
+			mParentActivity.setIsHaveToStartFragment(true);
+			getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.client_container, mRequestFragment).commit();
+			
 		}
-		
-		
 	}
 
 	@Override

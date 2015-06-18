@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -35,7 +36,8 @@ public class MainActivity extends ActionBarActivity{
 	Boolean mIsHaveToBackFragment = false;
 	Boolean mIsHaveToStartFragment = false;
 	public boolean isHaveToUseCurrentLocation =false;
-	private static final String API_KEY = "867b82fb3cbe6e4b39c4e90405b6bc5d";
+	public static final String CLIENT_REQUEST_ID_INDEX = "gopuda_client_current_request_id";
+	public static final String API_KEY = "867b82fb3cbe6e4b39c4e90405b6bc5d";
 	private net.daum.mf.map.api.MapView mMapView;
 	private int beforeContainerID;
 	private ServerManager mServerManager;
@@ -44,6 +46,8 @@ public class MainActivity extends ActionBarActivity{
 	LocationManager mLocMgr;
 	// GPSTracker class
     private GpsInfo gps;
+    private SharedPreferences mPreference;
+	private SharedPreferences.Editor mEditor;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,6 +57,8 @@ public class MainActivity extends ActionBarActivity{
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, mIntroFragment).commit();
 		}
+		mPreference = getSharedPreferences("gopuda", MODE_PRIVATE);
+		mEditor = mPreference.edit();
 		CurrentClient = new Client();
 		CurrentTruck = new Truck();
 		mMapView= new net.daum.mf.map.api.MapView(this);
@@ -93,7 +99,9 @@ public class MainActivity extends ActionBarActivity{
         }
         return null;
 	}
-	
+	public GpsInfo getGPS(){
+		return gps;
+	}
 	public String makeIndexString(String word){
 		return " \""+word+"\"";
 	}
@@ -114,13 +122,20 @@ public class MainActivity extends ActionBarActivity{
 	public MapView getMapView(){
 		return mMapView;
 	}
+	
+	public void setCurrentRequest(int request_id){
+		mEditor.putInt(CLIENT_REQUEST_ID_INDEX, request_id);
+		mEditor.commit();
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
+	public Context getMainContext(){
+		return MainActivity.this;
+	}
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -131,6 +146,14 @@ public class MainActivity extends ActionBarActivity{
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	public void setIsHaveToStartFragment(boolean start){
+		mIsHaveToStartFragment = start;
+		mIsHaveToBackFragment = !start;
+	}
+	public void setIsHaveToBackFragment(boolean back){
+		mIsHaveToStartFragment = !back;
+		mIsHaveToBackFragment = back;
 	}
 	
 	@Override

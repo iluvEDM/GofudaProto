@@ -56,18 +56,18 @@ public class CallPaper {
 		this.mCalledTruck = mCalledTruck;
 	}
 
-	public NGeoPoint getCallLocation() {
+	public String getCallLocation() {
 		return mCallLocation;
 	}
 
-	public void setCallLocation(NGeoPoint mCallLocation) {
+	public void setCallLocation(String mCallLocation) {
 		this.mCallLocation = mCallLocation;
 	}
 
 	private Integer mManNumber;
 	private Client mCallingClient;
 	private Truck mCalledTruck;
-	private NGeoPoint mCallLocation;
+	private String mCallLocation;
 	
 	public CallPaper(){
 		mCallId = 0;

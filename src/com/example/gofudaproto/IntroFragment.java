@@ -109,7 +109,7 @@ public class IntroFragment extends Fragment {
 					break;
 				}
 				parentActivity.setBeforeContainer(R.id.container);
-				parentActivity.setStartFragment(nextFragment);
+				
 				parentActivity.getSupportFragmentManager().beginTransaction().replace(R.id.container, nextFragment).commit();
 			}
 		};
@@ -119,7 +119,9 @@ public class IntroFragment extends Fragment {
 	
 	}
 
-	
+	public void setThisFragmentStartFragment(){
+		parentActivity.setStartFragment(this);
+	}
 
 	// TODO: Rename method, update argument and hook method into UI event
 	public void onButtonPressed(Uri uri) {
