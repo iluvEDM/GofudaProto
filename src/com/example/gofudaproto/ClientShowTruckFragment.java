@@ -13,8 +13,10 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,6 +64,7 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 	private CallPaper mCurrentCallPaper;
 	private Button mDragButton;
 	private Button mCancelCallButton;
+	private Context mContext;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -97,9 +100,10 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 		
 		mPreference = getActivity().getSharedPreferences("gopuda", Activity.MODE_PRIVATE);
 		mParentActivity = (MainActivity)getActivity();
-		
+		mViewTruckDetailFragment = new ClientViewTruckFragment();
 	}
-	public void initData(){
+	public void initData(Context context){
+		mContext = context;
 		mReadyTrucks = new ArrayList<Truck>();
 		mCallThumbNailArray = new ArrayList<CallThumbNailView>();
 	}
@@ -194,7 +198,7 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 		truck.setReady(callID, callDescription, truckName, type);
 		
 		mReadyTrucks.add(truck);
-		CallThumbNailView ctView = new CallThumbNailView(getActivity().getApplicationContext());
+		CallThumbNailView ctView = new CallThumbNailView(mContext);
 		ctView.setName(truckName);
 		ctView.setLocation(callDescription);
 		
@@ -218,6 +222,24 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 	@Override
 	public void serverDidEnd(String result) {
 		// TODO Auto-generated method stub
+		if(result != null){
+			try {
+				JSONObject jobj = new JSONObject(result);
+				int truck_id = jobj.getInt("truck_id");
+				String cart_img = jobj.getString("cart_img");
+				String menu_img = jobj.getString("truck_id");
+				String description = jobj.getString("truck_id");
+				
+				Drawable cart = mParentActivity.getServerManager().loadImage(cart_img);
+				Drawable menu = mParentActivity.getServerManager().loadImage(menu_img);
+				
+				mViewTruckDetailFragment.loadTruckSummary(description, cart, menu);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 	}
 
 	@Override
@@ -280,7 +302,7 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 				sendViewFoodTruckCall(t.getID());
 				Toast.makeText(getActivity().getBaseContext(), "call paper clicked", Toast.LENGTH_SHORT);
 				mParentActivity.setBeforeContainer(R.id.client_container);
-				mParentActivity.setHaveToBack(true);
+				mParentActivity.setIsHaveToBackFragment(true);
 				setThisFragmentToPrev();
 				getActivity().getSupportFragmentManager().beginTransaction()
 				.replace(R.id.client_container, mViewTruckDetailFragment).commit();
@@ -292,7 +314,11 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 		mParentActivity.setPrevFragment(this);
 	}
 	public void sendViewFoodTruckCall(int truck_id){
-//		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMING_TRUCKS, param, this);
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_TRUCK_PROFILE, makeGetTruckProfileParam(), this);
+	}
+	public String makeGetTruckProfileParam(){
+		return "{"+mParentActivity.makeIndexString("truck_id")+":"+mParentActivity.makeIndexString(String.valueOf(1))+
+				"}";
 	}
 	@Override
 	public int getItemViewType(int position) {

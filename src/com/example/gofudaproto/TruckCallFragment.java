@@ -198,7 +198,6 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 			tmpTNail.setLayoutParams(new AbsListView.LayoutParams(getActivity().getWindow().getAttributes().width, 150));
 			tmpTNail.setName(mCallArray.get(i).getEventName());
 			tmpTNail.setLocation(mCallArray.get(i).getCallLocation());
-			//주소 어떻게 얻어오지?
 			mCallThumbnailArray.add(tmpTNail);
 		}
 		mAdapter.notifyDataSetChanged();

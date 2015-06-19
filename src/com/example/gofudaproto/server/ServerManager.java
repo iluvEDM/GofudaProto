@@ -123,9 +123,10 @@ public class ServerManager
 			@Override
 			protected void onPostExecute(String result)
 			{
+				Log.d("server ended result : ",""+ result);
 				super.onPostExecute(result);
 				listener.serverDidEnd(result);
-				Log.d("server ended result : ",""+ result);
+				
 			}
 		};
 		

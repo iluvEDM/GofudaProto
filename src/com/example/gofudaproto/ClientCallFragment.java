@@ -110,7 +110,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 		mReadyTrucks = new ArrayList<Truck>();
 		mRequestFragment = new ClientMakeRequestFagment();
 		mTruckListFragment = new ClientShowTruckFragment();
-		mTruckListFragment.initData();
+		mTruckListFragment.initData(getActivity().getBaseContext());
 		
 
 	}
@@ -213,7 +213,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 						type = Truck.TruckType.MEAL;
 						break;
 					}
-					int truck_id = truck.getInt("id");
+					int truck_id = truck.getInt("truck_id");
 					String description = truck.getString("description");
 					mTruckListFragment.addTruckToComingTruckList(truck_id, description, truck_name, type);
 				}

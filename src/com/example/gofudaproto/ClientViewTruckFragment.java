@@ -7,11 +7,15 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -37,6 +41,11 @@ public class ClientViewTruckFragment extends android.support.v4.app.Fragment imp
 	private OnFragmentInteractionListener mListener;
 	private int current_truck_id;
 	private int current_request_id;
+	private TextView mSummary;
+	private ImageView mProfileImage;
+	private Button mOkButton;
+	private ScrollView mScrollView;
+	private ImageView mDetailImage;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -74,6 +83,7 @@ public class ClientViewTruckFragment extends android.support.v4.app.Fragment imp
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
+		
 		mParentActivity = (MainActivity)getActivity();
 	}
 
@@ -90,15 +100,26 @@ public class ClientViewTruckFragment extends android.support.v4.app.Fragment imp
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+		mProfileImage = (ImageView)getActivity().findViewById(R.id.truckview_profile_photo);
+		mScrollView = (ScrollView)getActivity().findViewById(R.id.description_menu);
+		mSummary = (TextView)getActivity().findViewById(R.id.profile_describe);
 		mComeButton = (Button)getActivity().findViewById(R.id.come_button);
 		mComeButton.setOnClickListener(new OnClickListener() {
-			
+		
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				sendComeRequestToServer();
 			}
 		});
+	}
+	public void loadTruckSummary(String summary,Drawable profile, Drawable description ){
+		mDetailImage = new ImageView(getActivity().getBaseContext());
+		mProfileImage.setImageDrawable(profile);
+		mDetailImage.setImageDrawable(description);
+		mScrollView.addView(mDetailImage);
+		mSummary.setText(summary);
+		
 	}
 	public String makeComeRequestParams(){
 		return "{"+mParentActivity.makeIndexString("truck_id")+":"+mParentActivity.makeIndexString(String.valueOf(current_truck_id)) + ","
