@@ -141,7 +141,8 @@ public class ServerManager
 		Drawable result = null;
 		
 		try {
-			result = Drawable.createFromStream((InputStream)new URL(SERVER_ADDRESS + "/img/" + imageName).getContent(), "src");
+			String url = SERVER_ADDRESS + "/img/" + imageName;
+			result = Drawable.createFromStream((InputStream)new URL(url).getContent(), "src");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
