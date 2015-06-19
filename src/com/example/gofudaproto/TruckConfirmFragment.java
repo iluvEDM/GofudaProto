@@ -142,7 +142,7 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 	}
 	
 	public String makeGoRequestParams(int truck_id, int request_id){
-		return "{"+makeIndexString("truck_id")+":"+ makeIndexString(String.valueOf(truck_id)) 
+		return "{"+makeIndexString("truck_id")+":"+ makeIndexString(String.valueOf(truck_id))+"," 
 				+makeIndexString("request_id")+":"+ makeIndexString(String.valueOf(request_id)) +"}";
 	}
 	@Override
