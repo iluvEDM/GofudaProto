@@ -1,0 +1,28 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.gofudaproto.ClientMenuFragment" >
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <Button 
+        android:id="@+id/menu_meal_button"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="left|top"
+        android:text="MEAL"/>
+    <Button 
+        android:id="@+id/menu_desert_button"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="right|center_vertical"
+        android:text="DESERT"/>
+    <Button 
+        android:id="@+id/menu_beverage_button"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="left|bottom"
+        android:text="BEVERAGE"/>
+
+</FrameLayout>

@@ -109,6 +109,13 @@ public class ClientMakeRequestFagment extends android.support.v4.app.Fragment im
 	}
 	
 	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		mParentActivity.setIsHaveToStartFragment(true);
+	}
+
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);

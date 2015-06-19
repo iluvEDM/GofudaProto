@@ -16,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.example.gofudaproto.MyApplication;
@@ -57,6 +58,7 @@ public class ServerManager
 	
 	
 	public void doSendCall(final String function, final String param, final OnServerManagerListener listener){
+		Log.d("params string :"+ function, param);
 		AsyncTask<String, Void, String> sendTask = new AsyncTask<String, Void, String>()
 		{
 			String serverURL = SERVER_ADDRESS + function;
@@ -121,6 +123,7 @@ public class ServerManager
 			{
 				super.onPostExecute(result);
 				listener.serverDidEnd(result);
+				Log.d("server ended result : ",""+ result);
 			}
 		};
 		

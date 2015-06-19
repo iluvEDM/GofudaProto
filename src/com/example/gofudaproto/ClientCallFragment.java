@@ -189,7 +189,7 @@ public class ClientCallFragment extends android.support.v4.app.Fragment implemen
 
 	@Override
 	public void serverDidEnd(String result) {
-		// TODO Auto-generated method stub
+		//TODO 여기서 온다는 푸드트럭 목록 셋업함 
 		mFrameLayout.removeView(mProgressBar);
 		if(result != null){
 			try {

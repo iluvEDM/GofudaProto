@@ -35,6 +35,7 @@ public class TruckFragment extends Fragment implements OnClickListener{
 	private Button mRecipeButton;
 	private TruckCallFragment mCallFragment;
 	private TruckConfirmFragment mConfirmFragment;
+	private TruckReviewFragment mReviewFragment;
 
 	/**
 	 * Use this factory method to create a new instance of this fragment using
@@ -93,6 +94,7 @@ public class TruckFragment extends Fragment implements OnClickListener{
 		
 		mCallFragment = new TruckCallFragment();
 		mConfirmFragment = new TruckConfirmFragment();
+		mReviewFragment = new TruckReviewFragment();
 		mParentActivity.getSupportFragmentManager().beginTransaction()
 		.replace(R.id.call_contain, mCallFragment).commit();
 	}
@@ -148,6 +150,8 @@ public class TruckFragment extends Fragment implements OnClickListener{
 			.replace(R.id.call_contain, mConfirmFragment).commit();
 			break;
 		case R.id.bt_review:
+			mParentActivity.getSupportFragmentManager().beginTransaction()
+			.replace(R.id.call_contain, mReviewFragment).commit();
 			break;
 		case R.id.bt_recipe:
 			break;

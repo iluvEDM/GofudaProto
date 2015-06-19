@@ -148,6 +148,13 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 		return mReadyTrucks.isEmpty();
 	}
 	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		mParentActivity.setIsHaveToStartFragment(true);
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.client_call, container, false);
