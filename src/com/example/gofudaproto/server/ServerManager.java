@@ -1,11 +1,13 @@
 package com.example.gofudaproto.server;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -135,7 +137,17 @@ public class ServerManager
 	}
 	
 	public Drawable loadImage(String imageName) {
-		return null;
+		Drawable result = null;
+		
+		try {
+			result = Drawable.createFromStream((InputStream)new URL(SERVER_ADDRESS + "/img/" + imageName).getContent(), "src");
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	
