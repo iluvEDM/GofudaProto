@@ -250,10 +250,7 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 				}, 400);
 				
 
-				Drawable cart = mParentActivity.getServerManager().loadImage(cart_img);
-				Drawable menu = mParentActivity.getServerManager().loadImage(menu_img);
 				mViewTruckDetailFragment.setTruckAndRequestIds(truck_id, mParentActivity.getCurrentRequirementId());
-				mViewTruckDetailFragment.loadTruckSummary(description, cart, menu);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
