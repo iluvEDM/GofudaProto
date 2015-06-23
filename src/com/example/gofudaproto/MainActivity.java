@@ -71,6 +71,9 @@ public class MainActivity extends ActionBarActivity{
 		gps = new GpsInfo(MainActivity.this);
         
 	}
+	public int getCurrentRequirementId(){
+		return mPreference.getInt(CLIENT_REQUEST_ID_INDEX, 0);
+	}
 	public void loadCurrentClient(){
 		
 	}
