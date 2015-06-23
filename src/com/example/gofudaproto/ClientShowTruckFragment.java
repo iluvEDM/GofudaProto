@@ -12,6 +12,7 @@ import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -222,14 +223,33 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 	@Override
 	public void serverDidEnd(String result) {
 		// TODO Auto-generated method stub
-		if(result != null){
+		if(result != null){ 
 			try {
 				JSONObject jobj = new JSONObject(result);
 				int truck_id = jobj.getInt("truck_id");
 				String cart_img = jobj.getString("cart_img");
-				String menu_img = jobj.getString("truck_id");
-				String description = jobj.getString("truck_id");
+				String menu_img = jobj.getString("menu_img");
+				String description = jobj.getString("description");
 				
+				mViewTruckDetailFragment.loadTruckSummary(description, null, null);
+				mParentActivity.getServerManager().setImageFromUrl(mViewTruckDetailFragment.mProfileImage, cart_img);
+				mParentActivity.getServerManager().setImageFromUrl(mViewTruckDetailFragment.mDetailImage, menu_img);
+//				
+//				Drawable cart = mParentActivity.getServerManager().loadImage(cart_img);
+//				Drawable menu = mParentActivity.getServerManager().loadImage(menu_img);
+				
+				mHandler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						
+						mViewTruckDetailFragment.mScrollView.addView(mViewTruckDetailFragment.mDetailImage);
+						
+					}
+				}, 400);
+				
+
 				Drawable cart = mParentActivity.getServerManager().loadImage(cart_img);
 				Drawable menu = mParentActivity.getServerManager().loadImage(menu_img);
 				mViewTruckDetailFragment.setTruckAndRequestIds(truck_id, mParentActivity.getCurrentRequirementId());
@@ -241,6 +261,9 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 			
 		}
 	}
+	
+	Handler mHandler = new Handler();
+	
 
 	@Override
 	public void serverDidError(String error) {

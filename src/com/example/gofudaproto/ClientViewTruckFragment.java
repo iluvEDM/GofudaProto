@@ -42,10 +42,10 @@ public class ClientViewTruckFragment extends android.support.v4.app.Fragment imp
 	private int current_truck_id;
 	private int current_request_id;
 	private TextView mSummary;
-	private ImageView mProfileImage;
+	public ImageView mProfileImage;
 	private Button mOkButton;
-	private ScrollView mScrollView;
-	private ImageView mDetailImage;
+	public ScrollView mScrollView;
+	public ImageView mDetailImage;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -115,9 +115,9 @@ public class ClientViewTruckFragment extends android.support.v4.app.Fragment imp
 	}
 	public void loadTruckSummary(String summary,Drawable profile, Drawable description ){
 		mDetailImage = new ImageView(getActivity().getBaseContext());
-		mProfileImage.setImageDrawable(profile);
-		mDetailImage.setImageDrawable(description);
-		mScrollView.addView(mDetailImage);
+//		mProfileImage.setImageDrawable(profile);
+//		mDetailImage.setImageDrawable(description);
+
 		mSummary.setText(summary);
 		
 	}
