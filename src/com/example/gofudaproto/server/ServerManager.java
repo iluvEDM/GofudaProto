@@ -19,7 +19,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ListView;
+import android.widget.ImageView;
 
 import com.example.gofudaproto.MyApplication;
 
@@ -137,11 +137,39 @@ public class ServerManager
 		}
 	}
 	
+	public void setImageFromUrl(final ImageView view,final String imageName){
+		AsyncTask<Void, Void, Void> async = new AsyncTask<Void, Void, Void>() {
+			Drawable result12 = null;
+			
+			@Override
+			protected Void doInBackground(Void... params) {
+				result12 = loadImage(imageName);
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Void result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
+				
+				if(result12 != null){
+					view.setImageDrawable(result12);
+				}
+			}
+			
+		};
+		
+		async.execute();		
+	}
+	
+		
+	
+	
 	public Drawable loadImage(String imageName) {
 		Drawable result = null;
 		
 		try {
-			String url = SERVER_ADDRESS + "/img/" + imageName;
+			String url = SERVER_ADDRESS + "img/" + imageName;
 			result = Drawable.createFromStream((InputStream)new URL(url).getContent(), "src");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
