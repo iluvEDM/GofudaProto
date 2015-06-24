@@ -34,7 +34,7 @@ public class TruckFragment extends Fragment implements OnClickListener{
 	private Button mReviewButton;
 	private Button mRecipeButton;
 	private TruckCallFragment mCallFragment;
-	private TruckConfirmFragment mConfirmFragment;
+	private TruckCheckFragment mCheckFragment;
 	private TruckReviewFragment mReviewFragment;
 
 	/**
@@ -93,7 +93,7 @@ public class TruckFragment extends Fragment implements OnClickListener{
 		mRecipeButton.setOnClickListener(this);
 		
 		mCallFragment = new TruckCallFragment();
-		mConfirmFragment = new TruckConfirmFragment();
+		mCheckFragment = new TruckCheckFragment();
 		mReviewFragment = new TruckReviewFragment();
 		mParentActivity.getSupportFragmentManager().beginTransaction()
 		.replace(R.id.call_contain, mCallFragment).commit();
@@ -147,7 +147,7 @@ public class TruckFragment extends Fragment implements OnClickListener{
 			break;
 		case R.id.bt_confirm:
 			mParentActivity.getSupportFragmentManager().beginTransaction()
-			.replace(R.id.call_contain, mConfirmFragment).commit();
+			.replace(R.id.call_contain, mCheckFragment).commit();
 			break;
 		case R.id.bt_review:
 			mParentActivity.getSupportFragmentManager().beginTransaction()
