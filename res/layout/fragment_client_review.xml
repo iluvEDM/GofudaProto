@@ -21,19 +21,19 @@
               android:id="@+id/review_client_meal"
               android:layout_width="wrap_content"
               android:layout_height="50dp" 
-              android:text="meal"
+              android:background="@drawable/meal"
               />
           <Button
               android:id="@+id/review_client_desert"
               android:layout_width="wrap_content"
               android:layout_height="50dp" 
-              android:text="desert"
+              android:background="@drawable/desert"
               />
           <Button
               android:id="@+id/review_client_beverage"
               android:layout_width="wrap_content"
               android:layout_height="50dp" 
-              android:text="beverage"
+              android:background="@drawable/beverage"
               />
       </LinearLayout>
       
@@ -42,6 +42,7 @@
           android:layout_width="match_parent"
           android:layout_height="1dp"
           android:layout_weight="7"
+          android:layout_marginTop="20dp"
           android:orientation="vertical" >
           <ListView
               android:id="@+id/review_detail_list"

@@ -11,18 +11,18 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="left|top"
-        android:text="MEAL"/>
+        android:background="@drawable/meal"/>
     <Button 
         android:id="@+id/menu_desert_button"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="right|center_vertical"
-        android:text="DESERT"/>
+        android:background="@drawable/desert"/>
     <Button 
         android:id="@+id/menu_beverage_button"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="left|bottom"
-        android:text="BEVERAGE"/>
+        android:background="@drawable/beverage"/>
 
 </FrameLayout>

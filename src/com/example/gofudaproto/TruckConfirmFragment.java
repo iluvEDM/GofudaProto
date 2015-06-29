@@ -53,6 +53,7 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 	private TextView mArrivalTime;
 	private TextView mClientName;
 	private Button mConfirmButton;
+	private MapViewFragment mMapFragment;
 	private boolean isGoSign = false;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
@@ -86,6 +87,7 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
 		mParentActivity = (MainActivity)getActivity();
+		mMapFragment = new MapViewFragment();
 	}
 
 	public void setRequestData(int id, int customer_id, int state, String name,int size, String position, String time, String need_time, String etc, String truck_count){
@@ -122,7 +124,19 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 		mArrivalTime = (TextView)getActivity().findViewById(R.id.call_arrival_time);
 		mClientName = (TextView)getActivity().findViewById(R.id.call_client);
 		mConfirmButton = (Button)getActivity().findViewById(R.id.button_confirm);
-		
+		mLocationButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mMapFragment.isHaveToCurrentLocation = false;
+				mParentActivity.setBeforeContainer(R.id.call_contain);
+				makeThisFragmentToPrevFragment();
+				mMapFragment.isHaveToCurrentLocation = true;
+				getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.call_contain, mMapFragment).commit();
+				
+			}
+		});
 		mConfirmButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -134,6 +148,9 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 		});
 		sendGetRequestInformationCall();
 		
+	}
+	private void makeThisFragmentToPrevFragment(){
+		mParentActivity.setPrevFragment(this);
 	}
 	//원랜 1이아니라 트럭아이디를 넣어야 합니
 	public void sendGoRequest(){

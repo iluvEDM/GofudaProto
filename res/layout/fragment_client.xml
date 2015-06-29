@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffffff"
     tools:context="com.example.gofudaproto.ClientFragment" >
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,35 +16,44 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
         android:background="#ffffffff"
+        android:gravity="center_vertical"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/bt_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:text="calls" />
+            android:background="@drawable/request_call" />
 
         <Button
             android:id="@+id/bt_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="menu" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/client_menuboard" />
 
         <Button
             android:id="@+id/bt_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="review" />
+             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/client_review"/>
 
         <Button
             android:id="@+id/bt_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="profile" />
+             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/client_private" />
     </LinearLayout>
 
     <LinearLayout

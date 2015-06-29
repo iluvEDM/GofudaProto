@@ -11,18 +11,25 @@ import com.example.gofudaproto.server.ServerManager;
 import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.webkit.WebView.FindListener;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -85,6 +92,7 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);		
 		}
+		mIsSendReview = false;
 		mParentActivity = (MainActivity)getActivity();
 	}
 
@@ -126,6 +134,8 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
 				// TODO Auto-generated method stub
+				
+				mReviewViewArray.get(position).setLayoutParams(new AbsListView.LayoutParams(mListView.getWidth(),400));
 				return mReviewViewArray.get(position);
 			}
 			
@@ -215,43 +225,68 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 		// TODO: Update argument type and name
 		public void onFragmentInteraction(Uri uri);
 	}
+	public void showSettingsAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mParentActivity.getMainContext());
+ 
+        alertDialog.setTitle("리뷰");
+        alertDialog.setMessage("리뷰가 성공적으로 전송 되었습니다.");
+   
+        alertDialog.setPositiveButton("확인", 
+                                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+            	dialog.cancel();
+            }
+        });
+ 
+        alertDialog.show();
+    }
 	@Override
 	public void serverDidEnd(String result) {
 		// TODO Auto-generated method stub
-		try {
-			JSONArray array = new JSONArray(result);
-			for (int i = 0; i < array.length() ; i++) {
-				JSONObject jobj = array.getJSONObject(i);
-//				 "id"=>$input["id"],
-//					        "truck_id"=>$input["truck_id"],
-//					        "request_id"=>$input["request_id"],
-//					        "customer_id"=>$input["customer_id"],
-//					        "star"=>$input["star"],
-//					        "content"=>$input["content"],
-//					        "reply"=>$input["reply"],
-//					        "time"=>$input["time"]
-				int id = jobj.getInt("id");
-				int truck_id = jobj.getInt("truck_id");
-				int request_id = jobj.getInt("request_id");
-				int customer_id = jobj.getInt("customer_id");
-				int star = jobj.getInt("star");
-				String content = jobj.getString("content");
-				String reply = jobj.getString("reply");
-				int time = jobj.getInt("time");
-				ClientReviewView crv = new ClientReviewView(mParentActivity.getApplicationContext());
-				crv.id = id;
-				crv.truck_id = truck_id;
-				crv.request_id = request_id;
-				crv.customer_id = customer_id;
-				crv.setStar(String.valueOf(star));
-				crv.setDescription(content);
-				mReviewViewArray.add(crv);
+		if (mIsSendReview) {
+			if (result.length()>0) {
+				showSettingsAlert();
 			}
 			
-			mAdapter.notifyDataSetChanged();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}else{
+			try {
+				JSONArray array = new JSONArray(result);
+				for (int i = 0; i < array.length() ; i++) {
+					JSONObject jobj = array.getJSONObject(i);
+					int id = jobj.getInt("id");
+					int truck_id = jobj.getInt("truck_id");
+					int request_id = jobj.getInt("request_id");
+					int customer_id = jobj.getInt("customer_id");
+					int star = jobj.getInt("star");
+					String content = jobj.getString("content");
+					String reply = jobj.getString("reply");
+					String time = jobj.getString("time");
+					ClientReviewView crv = new ClientReviewView(mParentActivity.getBaseContext());
+					crv.id = id;
+					crv.truck_id = truck_id;
+					crv.request_id = request_id;
+					crv.customer_id = customer_id;
+					crv.setStar(String.valueOf(star));
+					crv.setDescription(content);
+					crv.setReviewListener(this);
+//					crv.setDescriptionFocusListener(new OnFocusChangeListener() {
+//
+//						@Override
+//						public void onFocusChange(View v, boolean hasFocus) {
+//							// TODO Auto-generated method stub
+//							if (!hasFocus) {
+//								//							mParentActivity.hideKeyboard();
+//							}
+//						}
+//					});
+					mReviewViewArray.add(crv);
+				}
+
+				mAdapter.notifyDataSetChanged();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -260,14 +295,16 @@ public class ClientReviewFragment extends android.support.v4.app.Fragment implem
 		// TODO Auto-generated method stub
 		
 	}
-
+	private Boolean mIsSendReview;
 	@Override
-	public void sendThisReviewToServer(int id, String content) {
+	public void sendThisReviewToServer(int id,String star, String content) {
 		// TODO Auto-generated method stub
-		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_COMMENT_TARGETS, makeCommentTargetParams(mRequestID), this);
+		mIsSendReview = true;
+		mParentActivity.getServerManager().doSendCall(ServerManager.SEND_COMMENT, makeRegisterReviewParam(id,star,content), this);
 	}
-	public String makeRegisterReviewParam(int id,String content){
-		return "{"+ makeIndexString("id") + ":"+makeIndexString(String.valueOf(id)) 
+	public String makeRegisterReviewParam(int id,String star,String content){
+		return "{"+ makeIndexString("id") + ":"+makeIndexString(String.valueOf(id)) +","
+				+ makeIndexString("star") + ":"+makeIndexString(star) +","
 				+ makeIndexString("content") + ":"+makeIndexString(content) +"}";
 	}
 

@@ -15,11 +15,10 @@
             android:orientation="horizontal" >
             
 		    <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="back"
-                android:textAlignment="center" />
+                android:background="@drawable/button_back" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,7 +30,7 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/abc_btn_check_material" />
+                android:src="@drawable/truck_profile" />
             <TextView
                 android:id="@+id/profile_describe"
                 android:layout_width="1dp"
@@ -45,12 +44,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:orientation="vertical" >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:src="@drawable/star_3" />
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="1dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical|center_horizontal"
+                android:background="#00000000"
                 android:text="Show review"
                 android:textAlignment="center" />
         </LinearLayout>
@@ -66,7 +73,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|center_horizontal" >
-
+				<ImageView
+				    android:id="@+id/description_menu_image"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:src="@drawable/truck_menu"
+					/>
                 
             </ScrollView>
         </LinearLayout>
@@ -76,7 +88,7 @@
         android:id="@+id/come_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="come"
+        android:background="@drawable/request_call_on"
         android:layout_gravity="bottom|right" 
         />
 </FrameLayout>

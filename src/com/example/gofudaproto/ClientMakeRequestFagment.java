@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -65,6 +66,8 @@ public class ClientMakeRequestFagment extends android.support.v4.app.Fragment im
 	private ProgressBar mProgressBar;
 	private ClientViewTruckFragment mViewTruckDetailFragment;
 	private MainActivity mParentActivity;
+	private EditText mEventNameTextView;
+	private EditText mPeopleCountTextView;;
 	private SharedPreferences mPreference;
 	private SharedPreferences.Editor mEditor;
 	private double mCurrentLatitude = 0;
@@ -128,7 +131,8 @@ public class ClientMakeRequestFagment extends android.support.v4.app.Fragment im
 		params.gravity = Gravity.CENTER;
 		mParentActivity.setHaveToBackToStart(true);
 		mProgressBar.setLayoutParams(params);
-		
+		mEventNameTextView = (EditText)getActivity().findViewById(R.id.call_event_name);
+		mPeopleCountTextView = (EditText)getActivity().findViewById(R.id.call_people_num);
 		mSelectDining = (Button)getActivity().findViewById(R.id.call_button_dining);
 		mSelectDesert = (Button)getActivity().findViewById(R.id.call_button_desert);
 		mSelectBeverage = (Button)getActivity().findViewById(R.id.call_button_beverage);
@@ -149,17 +153,29 @@ public class ClientMakeRequestFagment extends android.support.v4.app.Fragment im
 				switch(v.getId()){
 				case R.id.call_button_dining:
 					currentNumber = Integer.parseInt(mDiningNumberView.getText().toString());
-					currentNumber++;
+					if (currentNumber > 0) {
+						currentNumber = 0;
+					}else{
+						currentNumber=1;
+					}
 					mDiningNumberView.setText(String.valueOf(currentNumber));
 					break;
 				case R.id.call_button_desert:
 					currentNumber = Integer.parseInt(mDesertNumberView.getText().toString());
-					currentNumber++;
+					if (currentNumber > 0) {
+						currentNumber = 0;
+					}else{
+						currentNumber=1;
+					}
 					mDesertNumberView.setText(String.valueOf(currentNumber));
 					break;
 				case R.id.call_button_beverage:
 					currentNumber = Integer.parseInt(mBeverageNumberView.getText().toString());
-					currentNumber++;
+					if (currentNumber > 0) {
+						currentNumber = 0;
+					}else{
+						currentNumber=1;
+					}
 					mBeverageNumberView.setText(String.valueOf(currentNumber));
 					break;
 				case R.id.call_button_location_current:{
@@ -201,7 +217,8 @@ public class ClientMakeRequestFagment extends android.support.v4.app.Fragment im
 			Toast.makeText(getActivity().getBaseContext(), "메뉴를 하나이상 선택해주세요", Toast.LENGTH_SHORT).show();
 		}else{
 //			String param = makeMenuCallParameter(900917, 0, "customer", 1, "30,128", makeTimeString(1, 30), "come fast");
-			mParentActivity.getServerManager().doSendCall(ServerManager.SEND_REQUEST, makeMenuCallParameter(900917, 10, "customer", 1, makeLocationToPositionString(mCurrentLatitude, mCurrentLongitude), makeTimeString(1, 30), "come fast"), this);
+			mParentActivity.getServerManager().doSendCall(ServerManager.SEND_REQUEST, makeMenuCallParameter(900917, 10, mEventNameTextView.getText().toString(), 
+					Integer.parseInt(mPeopleCountTextView.getText().toString().trim()), makeLocationToPositionString(mCurrentLatitude, mCurrentLongitude), makeTimeString(1, 30), "come fast"), this);
 		}
 //		mIsSendRequest = true;
 //		mIsShowTruckRequest = false;

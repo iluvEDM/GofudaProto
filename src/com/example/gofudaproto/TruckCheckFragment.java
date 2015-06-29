@@ -236,7 +236,7 @@ public class TruckCheckFragment extends android.support.v4.app.Fragment implemen
 				}
 
 				if (!mAcceptedRequests.isEmpty()) {
-					sendGetRequestInformationCall(mAcceptedRequests.get(0));
+					sendGetRequestInformationCall(mAcceptedRequests.get(mAcceptedRequests.size()-1));
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

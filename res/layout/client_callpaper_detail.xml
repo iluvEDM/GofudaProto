@@ -14,7 +14,8 @@
         <LinearLayout
             android:id="@+id/callpaper_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/request_back"
             android:orientation="vertical" >
 			<!--행사명   -->
 
@@ -28,13 +29,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="event name : "
+                    android:textColor="@color/color_black"
+                    android:text="@string/request_paper_eventname"
                     android:textSize="10pt" />
 
-                <TextView
+                <EditText
                     android:id="@+id/call_event_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/color_black"
                     android:text=" event "
                     android:textSize="10pt" />
             </LinearLayout>
@@ -50,14 +53,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="people : "
+                    android:text="인원 : "
+                    android:textColor="@color/color_black"
                     android:textSize="10pt" />
 
-                <TextView
+                <EditText
                     android:id="@+id/call_people_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" who "
+                    android:text="10"
+                    android:textColor="@color/color_black"
                     android:textSize="10pt" />
             </LinearLayout>
 
@@ -78,7 +83,8 @@
                     android:id="@+id/called_truck"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="call truck"
+                    android:text="요청 푸드트럭"
+                    android:textColor="@color/color_black"
                     android:textSize="10pt" />
                     
                 </LinearLayout>
@@ -98,13 +104,14 @@
                             android:id="@+id/call_button_dining"
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
-                            android:text="dining"
+                            android:background="@drawable/meal"
                             />
                         <TextView 
                             android:id="@+id/call_number_dining"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:gravity="center"
+                            android:textColor="@color/color_black"
                             android:text="0"
                             />
                         
@@ -119,13 +126,14 @@
                             android:id="@+id/call_button_desert"
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
-                            android:text="desert"
+                            android:background="@drawable/desert"
                             />
                         <TextView 
                             android:id="@+id/call_number_desert"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:gravity="center"
+                            android:textColor="@color/color_black"
                             android:text="0"
                             />
                         
@@ -140,13 +148,14 @@
                             android:id="@+id/call_button_beverage"
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
-                            android:text="beverage"
+                            android:background="@drawable/beverage"
                             />
                         <TextView 
                             android:id="@+id/call_number_beverage"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:gravity="center"
+                            android:textColor="@color/color_black"
                             android:text="0"
                             />
                         
@@ -163,7 +172,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="estimated time : "
+                    android:text="예상 이용 시간 : "
+                    android:textColor="@color/color_black"
                     android:textSize="10pt" />
 
                 <TextView
@@ -171,6 +181,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" 1hour "
+                    android:textColor="@color/color_black"
                     android:textSize="10pt" />
             </LinearLayout>
 			<!-- 위치 -->
@@ -184,14 +195,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="location  : "
+                    android:text="위치  : "
+                    android:textColor="@color/color_black"
                     android:textSize="10pt" />
 
                 <Button
                     android:id="@+id/call_button_location_current"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
-                    android:text="cur location" />
+                    android:text="현재 위치" />
                 <Button
                     android:id="@+id/call_button_location"
                     android:layout_width="wrap_content"
@@ -209,7 +221,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="extra requirement : "
+                    android:text="기타 요청사항  : "
+                    android:textColor="@color/color_black"
                     android:textSize="10pt" />
 
                 <TextView
@@ -217,6 +230,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" some rquirements "
+                    android:textColor="@color/color_black"
                     android:textSize="10pt" />
             </LinearLayout>
             
@@ -231,8 +245,8 @@
                 <Button
                     android:id="@+id/call_button_come"
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="come" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/request_call_on" />
 
 
             </LinearLayout>

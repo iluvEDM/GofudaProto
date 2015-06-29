@@ -16,6 +16,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -96,6 +97,7 @@ public class TruckReviewFragment extends android.support.v4.app.Fragment impleme
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
 				// TODO Auto-generated method stub
+				mReviewArray.get(position).setLayoutParams(new AbsListView.LayoutParams(mReviewList.getWidth(),400));
 				return mReviewArray.get(position);
 			}
 			
@@ -194,7 +196,9 @@ public class TruckReviewFragment extends android.support.v4.app.Fragment impleme
 					crv.request_id = jobj.getInt("request_id");
 					crv.customer_id = jobj.getInt("customer_id");
 					crv.setStar(jobj.getString("star"));
-					crv.setContentDescription(jobj.getString("content"));
+					crv.setDescription(jobj.getString("content"));
+					crv.setRegisterButtonHidden();
+					crv.setAllTextBlack();
 					mReviewArray.add(crv);
 				}
 				

@@ -2,13 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffa219"
     tools:context="com.example.gofudaproto.IntroFragment" >
     
 	<LinearLayout 
 	    android:id="@+id/intro_linear"
 	    android:layout_width="match_parent"
-	    android:layout_height="100dp"
+	    android:layout_height="130dp"
 	    android:layout_gravity="center"
+	    
 	    android:orientation="horizontal"
 	    >
 	    <Button
@@ -16,14 +18,19 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="truck" />
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:shadowColor="#00000000"
+            android:background="@drawable/main_truck" />
 
         <Button
             android:id="@+id/bt_client_install"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="client" />
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/main_customer" />
 	    
 	</LinearLayout>
 

@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffffff"
     tools:context="com.example.gofudaproto.TruckFragment" >
 
     <LinearLayout
@@ -19,21 +20,27 @@
 	
             <Button
                 android:id = "@+id/call_time"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:text="time" 
+                android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+               android:background="@drawable/time" 
                 />
             <Button
                 android:id = "@+id/call_location"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:text="location" 
+                android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+                android:background="@drawable/location" 
                 />
             <Button
                 android:id = "@+id/call_people"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:text="people" 
+                android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+                android:background="@drawable/people"
                 />
         </LinearLayout>
 

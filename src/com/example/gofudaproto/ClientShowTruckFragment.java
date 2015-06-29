@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
@@ -41,7 +42,7 @@ import android.widget.Toast;
  * instance of this fragment.
  *
  */
-public class ClientShowTruckFragment extends android.support.v4.app.Fragment implements OnServerManagerListener,ListAdapter{
+public class ClientShowTruckFragment extends android.support.v4.app.Fragment implements OnServerManagerListener{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
@@ -55,7 +56,6 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 	private ArrayList<CallThumbNailView> mCallThumbNailArray;
 	private ArrayList<Truck> mReadyTrucks;
 	private boolean isCallCountZero;
-	private Button mComeButton;
 	private OnClickListener mMenuSelectListener;
 	private ProgressBar mProgressBar;
 	private ClientViewTruckFragment mViewTruckDetailFragment;
@@ -66,6 +66,12 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 	private Button mDragButton;
 	private Button mCancelCallButton;
 	private Context mContext;
+	private BaseAdapter mAdapter;
+	
+	private Button mMealButton;
+	private Button mDesertButton;
+	private Button mBeverageButton;
+	
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -145,8 +151,82 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 				cancelTheCall();
 			}
 		});
-		mFrameLayout.addView(mDragButton);
-		mTruckListView.setAdapter(this);
+		mMealButton =  (Button)getActivity().findViewById(R.id.call_menu_rice);
+		mDesertButton =  (Button)getActivity().findViewById(R.id.call_menu_desert);
+		mBeverageButton =  (Button)getActivity().findViewById(R.id.call_menu_beverage);
+		mMenuSelectListener = new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				switch (v.getId()) {
+				case R.id.call_menu_rice:
+					filteringTrucksByTpye(Truck.TruckType.MEAL);
+					break;
+				case R.id.call_menu_desert:
+					filteringTrucksByTpye(Truck.TruckType.DESERT);
+					break;
+				case R.id.call_menu_beverage:
+					filteringTrucksByTpye(Truck.TruckType.BEVERAGE);
+					break;
+				default:
+					break;
+				}
+			}
+		};
+		mMealButton.setOnClickListener(mMenuSelectListener);
+		mDesertButton.setOnClickListener(mMenuSelectListener);
+		mBeverageButton.setOnClickListener(mMenuSelectListener);
+		mAdapter = new BaseAdapter() {
+
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				// TODO Auto-generated method stub
+				CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbNailArray.get(position);
+				Truck tmpTruck = mReadyTrucks.get(position);
+				tmpView.setEventNumber(String.valueOf(position));
+				tmpView.setName(String.valueOf(tmpTruck.getName()));
+				tmpView.setLocation(tmpTruck.getDescription());
+				
+				mCallThumbNailArray.get(position).setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						Truck t = mReadyTrucks.get(mCallThumbNailArray.indexOf(v));
+						sendViewFoodTruckCall(t.getID());
+						Toast.makeText(getActivity().getBaseContext(), "call paper clicked", Toast.LENGTH_SHORT);
+						mParentActivity.setBeforeContainer(R.id.client_container);
+						mParentActivity.setIsHaveToBackFragment(true);
+						setThisFragmentToPrev();
+						getActivity().getSupportFragmentManager().beginTransaction()
+						.replace(R.id.client_container, mViewTruckDetailFragment).commit();
+					}
+				});
+				return mCallThumbNailArray.get(position);
+			}
+
+			@Override
+			public long getItemId(int position) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public Object getItem(int position) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public int getCount() {
+				// TODO Auto-generated method stub
+				return mCallThumbNailArray.size();
+			}
+		};	
+//		mFrameLayout.addView(mDragButton);
+		mTruckListView.setAdapter(mAdapter);
+		filteringTrucksByTpye(Truck.TruckType.MEAL);
 	}
 	
 	public boolean isTruckEmpty(){
@@ -193,7 +273,19 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 	private String makeIndexString(String word){
 		return " \""+word+"\"";
 	}
-	
+	private void filteringTrucksByTpye(Truck.TruckType type){
+		mCallThumbNailArray.clear();
+		for (int i = 0; i < mReadyTrucks.size(); i++) {
+			if (mReadyTrucks.get(i).mType == type) {
+				CallThumbNailView ctView = new CallThumbNailView(mContext);
+				ctView.setName(mReadyTrucks.get(i).getName());
+				ctView.setLocation(mReadyTrucks.get(i).getDescription());
+				
+				mCallThumbNailArray.add(ctView);
+			}
+		}
+		mAdapter.notifyDataSetChanged();
+	}
 	public void addTruckToComingTruckList(int callID, String callDescription, String truckName , Truck.TruckType type){
 		Truck truck = new Truck();
 		truck.setReady(callID, callDescription, truckName, type);
@@ -204,6 +296,7 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 		ctView.setLocation(callDescription);
 		
 		mCallThumbNailArray.add(ctView);
+		
 	}
 	
 	/**
@@ -232,8 +325,10 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 				String description = jobj.getString("description");
 				
 				mViewTruckDetailFragment.loadTruckSummary(description, null, null);
-				mParentActivity.getServerManager().setImageFromUrl(mViewTruckDetailFragment.mProfileImage, cart_img);
-				mParentActivity.getServerManager().setImageFromUrl(mViewTruckDetailFragment.mDetailImage, menu_img);
+				
+				//주석풀어야함 서버에서받아오려
+//				mParentActivity.getServerManager().setImageFromUrl(mViewTruckDetailFragment.mProfileImage, cart_img);
+//				mParentActivity.getServerManager().setImageFromUrl(mViewTruckDetailFragment.mDetailImage, menu_img);
 //				
 //				Drawable cart = mParentActivity.getServerManager().loadImage(cart_img);
 //				Drawable menu = mParentActivity.getServerManager().loadImage(menu_img);
@@ -243,8 +338,8 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						
-						mViewTruckDetailFragment.mScrollView.addView(mViewTruckDetailFragment.mDetailImage);
+						//주석풀어야합니당 
+//						mViewTruckDetailFragment.mScrollView.addView(mViewTruckDetailFragment.mDetailImage);
 						
 					}
 				}, 400);
@@ -268,68 +363,7 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 		
 	}
 
-	@Override
-	public void registerDataSetObserver(DataSetObserver observer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void unregisterDataSetObserver(DataSetObserver observer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return mReadyTrucks.size();
-
-	}
-
-	@Override
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean hasStableIds() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		CallThumbNailView tmpView =  (CallThumbNailView)mCallThumbNailArray.get(position);
-		Truck tmpTruck = mReadyTrucks.get(position);
-		tmpView.setEventNumber(String.valueOf(position));
-		tmpView.setName(String.valueOf(tmpTruck.getName()));
-		tmpView.setLocation(tmpTruck.getDescription());
-		
-		mCallThumbNailArray.get(position).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Truck t = mReadyTrucks.get(mCallThumbNailArray.indexOf(v));
-				sendViewFoodTruckCall(t.getID());
-				Toast.makeText(getActivity().getBaseContext(), "call paper clicked", Toast.LENGTH_SHORT);
-				mParentActivity.setBeforeContainer(R.id.client_container);
-				mParentActivity.setIsHaveToBackFragment(true);
-				setThisFragmentToPrev();
-				getActivity().getSupportFragmentManager().beginTransaction()
-				.replace(R.id.client_container, mViewTruckDetailFragment).commit();
-			}
-		});
-		return mCallThumbNailArray.get(position);
-	}
+	
 	public void setThisFragmentToPrev(){
 		mParentActivity.setPrevFragment(this);
 	}
@@ -340,34 +374,6 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 		return "{"+mParentActivity.makeIndexString("truck_id")+":"+mParentActivity.makeIndexString(String.valueOf(1))+
 				"}";
 	}
-	@Override
-	public int getItemViewType(int position) {
-		// TODO Auto-generated method stub
-		return 1;
-	}
-
-	@Override
-	public int getViewTypeCount() {
-		// TODO Auto-generated method stub
-		return 1;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean areAllItemsEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled(int position) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 }

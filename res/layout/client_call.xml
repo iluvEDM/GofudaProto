@@ -9,6 +9,7 @@
         android:id="@+id/client_call_layout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:background="#ffffffff"
         android:orientation="vertical"
         >
 
@@ -23,19 +24,19 @@
                 android:id = "@+id/call_menu_rice"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="rice" 
+                android:background="@drawable/meal" 
                 />
             <Button
                 android:id = "@+id/call_menu_beverage"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="beverage" 
+                android:background="@drawable/beverage"
                 />
             <Button
                 android:id = "@+id/call_menu_desert"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:text="desert" 
+                android:background="@drawable/desert"
                 />
         </LinearLayout>
 

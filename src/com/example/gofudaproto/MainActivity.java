@@ -11,6 +11,7 @@ import com.nhn.android.maps.maplib.NGeoPoint;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -25,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import android.os.Build;
 import android.provider.Settings;
@@ -174,7 +176,10 @@ public class MainActivity extends ActionBarActivity{
 			super.onBackPressed();
 		}
 	}
-
+	public void hideKeyboard() {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+    }
 
 
 }

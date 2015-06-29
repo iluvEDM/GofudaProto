@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -100,6 +102,8 @@ public class ClientViewTruckFragment extends android.support.v4.app.Fragment imp
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+		
+		
 		mProfileImage = (ImageView)getActivity().findViewById(R.id.truckview_profile_photo);
 		mScrollView = (ScrollView)getActivity().findViewById(R.id.description_menu);
 		mSummary = (TextView)getActivity().findViewById(R.id.profile_describe);
@@ -115,6 +119,8 @@ public class ClientViewTruckFragment extends android.support.v4.app.Fragment imp
 	}
 	public void loadTruckSummary(String summary,Drawable profile, Drawable description ){
 		mDetailImage = new ImageView(getActivity().getBaseContext());
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		mDetailImage.setLayoutParams(params);
 //		mProfileImage.setImageDrawable(profile);
 //		mDetailImage.setImageDrawable(description);
 
