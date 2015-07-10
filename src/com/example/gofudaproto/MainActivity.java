@@ -2,43 +2,29 @@ package com.example.gofudaproto;
 
 import java.io.IOException;
 
-import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
-
-import com.example.gofudaproto.server.ServerManager;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.nhn.android.maps.maplib.NGeoPoint;
-
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.os.Build;
-import android.provider.Settings;
+
+import com.example.gofudaproto.server.ServerManager;
+import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class MainActivity extends ActionBarActivity{
 	private Fragment mPrevFragment;
@@ -56,7 +42,7 @@ public class MainActivity extends ActionBarActivity{
     // SharedPreferences에 저장할 때 key 값으로 사용됨.
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private static final String TAG = "ICELANCER";
-    String SENDER_ID = "Your-Sender-ID";
+    String SENDER_ID = "207372261885";
 
     GoogleCloudMessaging gcm;
     Context context;
@@ -157,7 +143,7 @@ public class MainActivity extends ActionBarActivity{
 
                     // 서버에 발급받은 등록 아이디를 전송한다.
                     // 등록 아이디는 서버에서 앱에 푸쉬 메시지를 전송할 때 사용된다.
-                    sendRegistrationIdToBackend();
+                    sendRegistrationIdToBackend(true,regid);
 
                     // 등록 아이디를 저장해 등록 아이디를 매번 받지 않도록 한다.
                     storeRegistrationId(context, regid);
@@ -188,9 +174,25 @@ public class MainActivity extends ActionBarActivity{
         editor.commit();
     }
 
-    private void sendRegistrationIdToBackend() {
-
+    private void sendRegistrationIdToBackend(final boolean isTruck, String id) {
+    	
+    	String param = String.format("{\"device_id\":\"%s\"}",id);
+    	
+    	
+    	mServerManager.doSendCall(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, param, new OnServerManagerListener() {
+			@Override
+			public void serverDidError(String error) {
+			}
+			
+			@Override
+			public void serverDidEnd(String result) {
+				
+				Log.i(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, result);
+				
+			}
+		});
     }
+    
 	@Override
 	protected void onPostResume() {
 		// TODO Auto-generated method stub

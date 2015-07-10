@@ -57,6 +57,8 @@ public class ServerManager
 	public static final String SHOW_NEW_COMMENTS = "show_new_comments.php";
 	public static final String SEND_CUSTOMER_COME_REQUEST = "send_customer_come_request.php";
 	public static final String CANCEL_REQUEST = "cancel_request.php";
+	public static final String REGISTER_CUSTOMER_ID = "send_customer_new.php";
+	public static final String REGISTER_TRUCK_ID = "send_truck_new.php";
 	
 	
 	public void doSendCall(final String function, final String param, final OnServerManagerListener listener){
