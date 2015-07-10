@@ -160,7 +160,6 @@ public class MainActivity extends ActionBarActivity{
 
             @Override
             protected void onPostExecute(String msg) {
-                mDisplay.append(msg + "\n");
             }
 
         }.execute(null, null, null);
