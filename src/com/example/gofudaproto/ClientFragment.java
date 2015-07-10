@@ -39,7 +39,7 @@ public class ClientFragment extends Fragment implements OnClickListener{
 	private ClientReviewFragment mReviewFragment;
 	private ClientMenuFragment mMenuFragment;
 	private MainActivity mParentActivity;
-	
+	private String mGoogleRegId;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -118,7 +118,9 @@ public class ClientFragment extends Fragment implements OnClickListener{
 //					+ " must implement OnFragmentInteractionListener");
 //		}
 	}
-
+	public void setGoogleRegisterId(String id){
+		mGoogleRegId = id;
+	}
 	@Override
 	public void onDetach() {
 		super.onDetach();

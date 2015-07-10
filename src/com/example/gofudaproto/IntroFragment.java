@@ -3,6 +3,7 @@ package com.example.gofudaproto;
 import com.example.gofudaproto.server.ServerManagerTest;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,7 +27,7 @@ public class IntroFragment extends Fragment {
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
-
+	public static final String PROPERTY_REG_ID = "registration_id";
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 	private String mParam2;
@@ -38,7 +39,7 @@ public class IntroFragment extends Fragment {
 	private OnClickListener buttonListner;
 	
 	private Fragment nextFragment;
-	
+	private SharedPreferences mPreference;
 	MainActivity parentActivity;
 	/**
 	 * Use this factory method to create a new instance of this fragment using
@@ -71,7 +72,7 @@ public class IntroFragment extends Fragment {
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
-		
+		mPreference = parentActivity.getSharedPreferences("gopuda", Activity.MODE_PRIVATE);
 	}
 	
 	@Override
@@ -103,9 +104,12 @@ public class IntroFragment extends Fragment {
 				switch(v.getId()){
 				case R.id.bt_truck_install:
 					nextFragment = new TruckFragment();
+					parentActivity.sendRegistrationIdToBackend(true);
 					break;
 				case R.id.bt_client_install:
 					nextFragment = new ClientFragment();
+					ClientFragment cf = (ClientFragment)nextFragment;
+					parentActivity.sendRegistrationIdToBackend(false);
 					break;
 				}
 				parentActivity.setBeforeContainer(R.id.container);

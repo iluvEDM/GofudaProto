@@ -60,6 +60,8 @@ public class MainActivity extends ActionBarActivity{
     private GpsInfo gps;
     private SharedPreferences mPreference;
 	private SharedPreferences.Editor mEditor;
+	private String mTruckRegisterId = "";
+	private String mClientRegiserId = "";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -143,10 +145,10 @@ public class MainActivity extends ActionBarActivity{
 
                     // 서버에 발급받은 등록 아이디를 전송한다.
                     // 등록 아이디는 서버에서 앱에 푸쉬 메시지를 전송할 때 사용된다.
-                    sendRegistrationIdToBackend(true,regid);
+//                    sendRegistrationIdToBackend(true,regid);
 
                     // 등록 아이디를 저장해 등록 아이디를 매번 받지 않도록 한다.
-                    storeRegistrationId(context, regid);
+//                    storeRegistrationId(context, regid);
                 } catch (IOException ex) {
                     msg = "Error :" + ex.getMessage();
                     // If there is an error, don't just keep trying to register.
@@ -173,24 +175,42 @@ public class MainActivity extends ActionBarActivity{
         editor.putInt(PROPERTY_APP_VERSION, appVersion);
         editor.commit();
     }
-
-    private void sendRegistrationIdToBackend(final boolean isTruck, String id) {
+    
+    public String getRegisterId(boolean isTruck){
+    	if (isTruck) {
+			return mTruckRegisterId;
+		}else{
+			return mClientRegiserId;
+		}
+    }
+    
+    public void sendRegistrationIdToBackend(final boolean isTruck) {
     	
-    	String param = String.format("{\"device_id\":\"%s\"}",id);
+    	if (mPreference.getString(PROPERTY_REG_ID, "").isEmpty()) {
+    		String param = String.format("{\"device_id\":\"%s\"}",regid);
+    		mServerManager.doSendCall(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, param, new OnServerManagerListener() {
+    			@Override
+    			public void serverDidError(String error) {
+    			}
+    			
+    			@Override
+    			public void serverDidEnd(String result) {
+    				if (result != null) {
+    					storeRegistrationId(getBaseContext(), result);
+    					if (isTruck) {
+    						mTruckRegisterId = result;
+    					}else{
+    						mClientRegiserId = result;
+    					}
+    				}
+    				
+    				
+    				Log.i(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, result);
+    				
+    			}
+    		});
+		}
     	
-    	
-    	mServerManager.doSendCall(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, param, new OnServerManagerListener() {
-			@Override
-			public void serverDidError(String error) {
-			}
-			
-			@Override
-			public void serverDidEnd(String result) {
-				
-				Log.i(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, result);
-				
-			}
-		});
     }
     
 	@Override
