@@ -72,6 +72,7 @@ public class IntroFragment extends Fragment {
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
+
 	}
 	
 	@Override
@@ -119,7 +120,7 @@ public class IntroFragment extends Fragment {
 		
 		buttonTruck.setOnClickListener(buttonListner);
 		buttonClient.setOnClickListener(buttonListner);
-	
+		mPreference = parentActivity.getSharedPreferences("gopuda", Activity.MODE_PRIVATE);
 	}
 
 	public void setThisFragmentStartFragment(){
