@@ -72,7 +72,6 @@ public class IntroFragment extends Fragment {
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
-		mPreference = parentActivity.getSharedPreferences("gopuda", Activity.MODE_PRIVATE);
 	}
 	
 	@Override

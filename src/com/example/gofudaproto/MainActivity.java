@@ -126,9 +126,10 @@ public class MainActivity extends ActionBarActivity{
             PackageInfo packageInfo = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0);
             return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (Exception e) {
             // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
+//            throw new RuntimeException("Could not get package name: " + e);
+        	return 0;
         }
     }
     private void registerInBackground() {
@@ -185,7 +186,7 @@ public class MainActivity extends ActionBarActivity{
     
     public void sendRegistrationIdToBackend(final boolean isTruck) {
     	
-    	if (mPreference.getString(PROPERTY_REG_ID, "").isEmpty()) {
+    	if (mPreference.getString(PROPERTY_REG_ID, "").equals("")) {
     		String param = String.format("{\"device_id\":\"%s\"}",regid);
     		mServerManager.doSendCall(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, param, new OnServerManagerListener() {
     			@Override
