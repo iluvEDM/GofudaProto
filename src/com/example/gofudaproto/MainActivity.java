@@ -185,8 +185,8 @@ public class MainActivity extends ActionBarActivity{
     }
     
     public void sendRegistrationIdToBackend(final boolean isTruck) {
-    	
-    	if (mPreference.getString(PROPERTY_REG_ID, "").equals("")) {
+    	final SharedPreferences prefs = getGCMPreferences(context);	
+    	if (prefs.getString(PROPERTY_REG_ID, "").equals("")) {
     		String param = String.format("{\"device_id\":\"%s\"}",regid);
     		mServerManager.doSendCall(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, param, new OnServerManagerListener() {
     			@Override
