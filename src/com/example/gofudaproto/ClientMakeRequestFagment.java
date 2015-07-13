@@ -153,28 +153,28 @@ public class ClientMakeRequestFagment extends android.support.v4.app.Fragment im
 				switch(v.getId()){
 				case R.id.call_button_dining:
 					currentNumber = Integer.parseInt(mDiningNumberView.getText().toString());
-					if (currentNumber > 0) {
+					if (currentNumber > 5) {
 						currentNumber = 0;
 					}else{
-						currentNumber=1;
+						currentNumber++;
 					}
 					mDiningNumberView.setText(String.valueOf(currentNumber));
 					break;
 				case R.id.call_button_desert:
 					currentNumber = Integer.parseInt(mDesertNumberView.getText().toString());
-					if (currentNumber > 0) {
+					if (currentNumber > 5) {
 						currentNumber = 0;
 					}else{
-						currentNumber=1;
+						currentNumber++;
 					}
 					mDesertNumberView.setText(String.valueOf(currentNumber));
 					break;
 				case R.id.call_button_beverage:
 					currentNumber = Integer.parseInt(mBeverageNumberView.getText().toString());
-					if (currentNumber > 0) {
+					if (currentNumber > 5) {
 						currentNumber = 0;
 					}else{
-						currentNumber=1;
+						currentNumber++;
 					}
 					mBeverageNumberView.setText(String.valueOf(currentNumber));
 					break;
@@ -217,7 +217,7 @@ public class ClientMakeRequestFagment extends android.support.v4.app.Fragment im
 			Toast.makeText(getActivity().getBaseContext(), "메뉴를 하나이상 선택해주세요", Toast.LENGTH_SHORT).show();
 		}else{
 //			String param = makeMenuCallParameter(900917, 0, "customer", 1, "30,128", makeTimeString(1, 30), "come fast");
-			mParentActivity.getServerManager().doSendCall(ServerManager.SEND_REQUEST, makeMenuCallParameter(900917, 10, mEventNameTextView.getText().toString(), 
+			mParentActivity.getServerManager().doSendCall(ServerManager.SEND_REQUEST, makeMenuCallParameter(Integer.parseInt(mParentActivity.getRegisterId(false)), 10, mEventNameTextView.getText().toString(), 
 					Integer.parseInt(mPeopleCountTextView.getText().toString().trim()), makeLocationToPositionString(mCurrentLatitude, mCurrentLongitude), makeTimeString(1, 30), "come fast"), this);
 		}
 //		mIsSendRequest = true;

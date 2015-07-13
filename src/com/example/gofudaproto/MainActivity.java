@@ -37,11 +37,11 @@ public class MainActivity extends ActionBarActivity{
 	public static final String API_KEY = "867b82fb3cbe6e4b39c4e90405b6bc5d";
 	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	// SharedPreferences에 저장할 때 key 값으로 사용됨.
-    public static final String PROPERTY_REG_ID = "registration_id";
-
+    public static final String PROPERTY_REG_ID_T = "registration_id_t";
+    public static final String PROPERTY_REG_ID_C = "registration_id_c";
     // SharedPreferences에 저장할 때 key 값으로 사용됨.
     private static final String PROPERTY_APP_VERSION = "appVersion";
-    private static final String TAG = "ICELANCER";
+    private static final String TAG = "icelancer";
     String SENDER_ID = "207372261885";
 
     GoogleCloudMessaging gcm;
@@ -60,6 +60,7 @@ public class MainActivity extends ActionBarActivity{
     private GpsInfo gps;
     private SharedPreferences mPreference;
 	private SharedPreferences.Editor mEditor;
+	private String mRegisterId = "";
 	private String mTruckRegisterId = "";
 	private String mClientRegiserId = "";
 	@Override
@@ -94,12 +95,17 @@ public class MainActivity extends ActionBarActivity{
                 Log.i(TAG, "No valid Google Play Services APK found.");
             }
         }
-
         
 	}
 	private String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
-        String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+        String registrationId ;
+        if (prefs.getString(PROPERTY_REG_ID_T, "").equals("")) {
+        	 registrationId = prefs.getString(PROPERTY_REG_ID_C, "");
+		}else{
+			 registrationId = prefs.getString(PROPERTY_REG_ID_T, "");
+		}
+       
         if (registrationId.isEmpty()) {
             Log.i(TAG, "Registration not found.");
             return "";
@@ -166,12 +172,17 @@ public class MainActivity extends ActionBarActivity{
         }.execute(null, null, null);
     }
 
-    private void storeRegistrationId(Context context, String regid) {
+    private void storeRegistrationId(Context context, String regid, boolean isTruck) {
         final SharedPreferences prefs = getGCMPreferences(context);
         int appVersion = getAppVersion(context);
         Log.i(TAG, "Saving regId on app version " + appVersion);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(PROPERTY_REG_ID, regid);
+        if (isTruck) {
+        	editor.putString(PROPERTY_REG_ID_T, regid);
+		}else{
+			editor.putString(PROPERTY_REG_ID_C, regid);
+		}
+//        editor.putString(PROPERTY_REG_ID, regid);
         editor.putInt(PROPERTY_APP_VERSION, appVersion);
         editor.commit();
     }
@@ -183,10 +194,16 @@ public class MainActivity extends ActionBarActivity{
 			return mClientRegiserId;
 		}
     }
-    
+    private Fragment nextFragment;
     public void sendRegistrationIdToBackend(final boolean isTruck) {
     	final SharedPreferences prefs = getGCMPreferences(context);	
-    	if (prefs.getString(PROPERTY_REG_ID, "").equals("")) {
+    	String reg_id;
+    	if (isTruck) {
+			reg_id =  prefs.getString(PROPERTY_REG_ID_T, "");
+		}else{
+			reg_id =  prefs.getString(PROPERTY_REG_ID_C, "");
+		}
+    	if (reg_id.isEmpty()) {
     		String param = String.format("{\"device_id\":\"%s\"}",regid);
     		mServerManager.doSendCall(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, param, new OnServerManagerListener() {
     			@Override
@@ -196,19 +213,41 @@ public class MainActivity extends ActionBarActivity{
     			@Override
     			public void serverDidEnd(String result) {
     				if (result != null) {
-    					storeRegistrationId(getBaseContext(), result);
+    					
     					if (isTruck) {
     						mTruckRegisterId = result;
+    						setBeforeContainer(R.id.container);
+    						nextFragment = new TruckFragment();
+    						getSupportFragmentManager().beginTransaction().replace(R.id.container, nextFragment).commit();
+    						storeRegistrationId(getBaseContext(), result,true);
+    						
     					}else{
     						mClientRegiserId = result;
+    						setBeforeContainer(R.id.container);
+    						nextFragment = new ClientFragment();
+    						getSupportFragmentManager().beginTransaction().replace(R.id.container, nextFragment).commit();
+    						storeRegistrationId(getBaseContext(), result,false);
     					}
     				}
     				
     				
-    				Log.i(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, result);
+//    				Log.i(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, result);
     				
     			}
     		});
+		}else{
+			if (isTruck) {
+				mTruckRegisterId = prefs.getString(PROPERTY_REG_ID_T, "");
+				setBeforeContainer(R.id.container);
+				nextFragment = new TruckFragment();
+				getSupportFragmentManager().beginTransaction().replace(R.id.container, nextFragment).commit();
+				
+			}else{
+				mClientRegiserId = prefs.getString(PROPERTY_REG_ID_C, "");
+				setBeforeContainer(R.id.container);
+				nextFragment = new ClientFragment();
+				getSupportFragmentManager().beginTransaction().replace(R.id.container, nextFragment).commit();
+			}
 		}
     	
     }

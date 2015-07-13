@@ -103,18 +103,18 @@ public class IntroFragment extends Fragment {
 				// TODO Auto-generated method stub
 				switch(v.getId()){
 				case R.id.bt_truck_install:
-					nextFragment = new TruckFragment();
+//					nextFragment = new TruckFragment();
 					parentActivity.sendRegistrationIdToBackend(true);
 					break;
 				case R.id.bt_client_install:
-					nextFragment = new ClientFragment();
-					ClientFragment cf = (ClientFragment)nextFragment;
+//					nextFragment = new ClientFragment();
+//					ClientFragment cf = (ClientFragment)nextFragment;
 					parentActivity.sendRegistrationIdToBackend(false);
 					break;
 				}
-				parentActivity.setBeforeContainer(R.id.container);
+//				parentActivity.setBeforeContainer(R.id.container);
 				setThisFragmentStartFragment();
-				parentActivity.getSupportFragmentManager().beginTransaction().replace(R.id.container, nextFragment).commit();
+//				parentActivity.getSupportFragmentManager().beginTransaction().replace(R.id.container, nextFragment).commit();
 			}
 		};
 		

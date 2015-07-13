@@ -21,6 +21,7 @@ public class GcmIntentService extends IntentService {
     public GcmIntentService() {
 //        Used to name the worker thread, important only for debugging.
         super("GcmIntentService");
+//        android.os.Debug.waitForDebugger();
     }
 
     @Override
@@ -44,8 +45,13 @@ public class GcmIntentService extends IntentService {
                    }
                }
                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
+               String[] tokens = extras.toString().split(",");
+               String message = tokens[1];
+               String[] tokens2 = message.split("=");
+               String real_message = tokens2[1];
+               Log.i(TAG, real_message);
                // Post notification of received message.
-               sendNotification("Received: " + extras.toString());
+               sendNotification(real_message);
                Log.i(TAG, "Received: " + extras.toString());
             }
         }
@@ -65,8 +71,8 @@ public class GcmIntentService extends IntentService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("GCM Notification")
+                        .setSmallIcon(R.drawable.main_truck)
+                        .setContentTitle("고푸다")
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
                         .setContentText(msg);
