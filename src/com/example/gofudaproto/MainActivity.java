@@ -76,10 +76,13 @@ public class MainActivity extends ActionBarActivity{
 		mEditor = mPreference.edit();
 		CurrentClient = new Client();
 		CurrentTruck = new Truck();
-		mMapView= new net.daum.mf.map.api.MapView(this);
-		mMapView.setDaumMapApiKey(API_KEY);
-		mMapView.setCurrentLocationTrackingMode(net.daum.mf.map.api.MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
-		mMapView.setShowCurrentLocationMarker(true);
+		if (mIsGoneToBackground) {
+			mMapView= new net.daum.mf.map.api.MapView(this);
+			mMapView.setDaumMapApiKey(API_KEY);
+			mMapView.setCurrentLocationTrackingMode(net.daum.mf.map.api.MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+			mMapView.setShowCurrentLocationMarker(true);
+		}
+		
 //		mMapView.setCurrentLocationEventListener(this);
 		mServerManager = new ServerManager();
 		
@@ -97,6 +100,32 @@ public class MainActivity extends ActionBarActivity{
         }
         
 	}
+	private boolean mIsGoneToBackground = false;
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		Log.d("life", "onPause");
+		mIsGoneToBackground = true;
+	}
+	
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		Log.d("life", "onDestroy");
+		super.onDestroy();
+	}
+
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		Log.d("life", "onStop");
+		super.onStop();
+	}
+
+
 	private String getRegistrationId(Context context) {
         final SharedPreferences prefs = getGCMPreferences(context);
         String registrationId ;

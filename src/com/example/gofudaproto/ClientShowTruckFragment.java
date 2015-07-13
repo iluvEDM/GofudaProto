@@ -368,10 +368,10 @@ public class ClientShowTruckFragment extends android.support.v4.app.Fragment imp
 		mParentActivity.setPrevFragment(this);
 	}
 	public void sendViewFoodTruckCall(int truck_id){
-		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_TRUCK_PROFILE, makeGetTruckProfileParam(), this);
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_TRUCK_PROFILE, makeGetTruckProfileParam(truck_id), this);
 	}
-	public String makeGetTruckProfileParam(){
-		return "{"+mParentActivity.makeIndexString("truck_id")+":"+mParentActivity.makeIndexString(String.valueOf(1))+
+	public String makeGetTruckProfileParam(int id){
+		return "{"+mParentActivity.makeIndexString("truck_id")+":"+mParentActivity.makeIndexString(String.valueOf(id))+
 				"}";
 	}
 	

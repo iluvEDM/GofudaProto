@@ -154,7 +154,7 @@ public class TruckCheckFragment extends android.support.v4.app.Fragment implemen
 	}
 	//1대신 트럭아이디를 받아야 함 
 	public void sendGetAcceptedRequest(){
-		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_ACCEPTED_REQUEST, makeGetRequestsParams(1), this);
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_ACCEPTED_REQUEST, makeGetRequestsParams(Integer.parseInt(mParentActivity.getRegisterId(true))), this);
 	}
 	private String makeGetRequestsParams(int truck_id){
 

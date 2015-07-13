@@ -126,7 +126,7 @@ public class TruckReviewFragment extends android.support.v4.app.Fragment impleme
 	
 	//역시 1 대신 해당 트럭 아이디 값이 들어가야 함. 
 	public void sendGetReviewList(){
-		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_NEW_COMMENTS, makeShowingTrucksParameter(1), this);
+		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_NEW_COMMENTS, makeShowingTrucksParameter(Integer.parseInt(mParentActivity.getRegisterId(true))), this);
 	}
 	private String makeShowingTrucksParameter(int request_id){
 		return "{"+ makeIndexString("truck_id") + ":"+makeIndexString(String.valueOf(request_id)) +"}";
