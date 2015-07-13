@@ -203,7 +203,7 @@ public class MainActivity extends ActionBarActivity{
 		}else{
 			reg_id =  prefs.getString(PROPERTY_REG_ID_C, "");
 		}
-    	if (reg_id.isEmpty()) {
+    	if (reg_id.equals("")) {
     		String param = String.format("{\"device_id\":\"%s\"}",regid);
     		mServerManager.doSendCall(isTruck ? ServerManager.REGISTER_TRUCK_ID : ServerManager.REGISTER_CUSTOMER_ID, param, new OnServerManagerListener() {
     			@Override
