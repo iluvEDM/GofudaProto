@@ -154,7 +154,7 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 	}
 	//원랜 1이아니라 트럭아이디를 넣어야 합니
 	public void sendGoRequest(){
-		mParentActivity.getServerManager().doSendCall(ServerManager.SEND_TRUCK_GO_REQUEST, makeGoRequestParams(1,current_request_id), this);
+		mParentActivity.getServerManager().doSendCall(ServerManager.SEND_TRUCK_GO_REQUEST, makeGoRequestParams(Integer.parseInt(mParentActivity.getRegisterId(true)),current_request_id), this);
 		isGoSign = true;
 	}
 	
