@@ -36,15 +36,15 @@ public class GcmIntentService extends IntentService {
            if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                // This loop represents the service doing some work.
-               for (int i=0; i<5; i++) {
-                   Log.i(TAG, "Working... " + (i + 1)
-                           + "/5 @ " + SystemClock.elapsedRealtime());
-                   try {
-                       Thread.sleep(5000);
-                   } catch (InterruptedException e) {
-                   }
-               }
-               Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
+//               for (int i=0; i<5; i++) {
+//                   Log.i(TAG, "Working... " + (i + 1)
+//                           + "/5 @ " + SystemClock.elapsedRealtime());
+//                   try {
+//                       Thread.sleep(5000);
+//                   } catch (InterruptedException e) {
+//                   }
+//               }
+//               Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
                String[] tokens = extras.toString().split(",");
                String message = tokens[1];
                String[] tokens2 = message.split("=");
