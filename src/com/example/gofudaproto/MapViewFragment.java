@@ -39,9 +39,12 @@ import android.widget.Toast;
  * this fragment.
  *
  */
-public class MapViewFragment extends Fragment implements MapViewEventListener,MapView.POIItemEventListener{
+public class MapViewFragment extends Fragment implements MapViewEventListener{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+	public static interface CurrentLocationChangedListner {
+		void setCurrentLocation(double latitude, double longitude);
+	}
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
 	private static final String API_KEY = "867b82fb3cbe6e4b39c4e90405b6bc5d";
@@ -59,6 +62,12 @@ public class MapViewFragment extends Fragment implements MapViewEventListener,Ma
 	private EditText mSearchText;
 	private LinearLayout mMapLayout;
 	public String currentLocation;
+	private CurrentLocationChangedListner mLocListener;
+	public MapPoint locationNeedToLoad;
+	
+	public void setLocationListner(CurrentLocationChangedListner listener){
+		mLocListener = listener;
+	}
 	/**
 	 * Use this factory method to create a new instance of this fragment using
 	 * the provided parameters.
@@ -91,20 +100,45 @@ public class MapViewFragment extends Fragment implements MapViewEventListener,Ma
 		mMainLayout = (FrameLayout)getActivity().findViewById(R.id.map_mainlayout);
 		mMapLayout = (LinearLayout)getActivity().findViewById(R.id.map_layout);
 		currentPoint = MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633);
-		if(isHaveToCurrentLocation){
-			if(mParentActivity.getCurrentLocation() != null){
-				mMapView.setMapCenterPoint(mParentActivity.getCurrentLocation(), true);
-				currentPoint = mParentActivity.getCurrentLocation();
-			}
+		
+		if(mParentActivity.getCurrentLocation() != null && locationNeedToLoad == null){
+			mMapView.setMapCenterPoint(mParentActivity.getCurrentLocation(), true);
+			currentPoint = mParentActivity.getCurrentLocation();
+		}else{
+			mMapView.setMapCenterPoint(locationNeedToLoad, true);
+			currentPoint = locationNeedToLoad;
 		}
 		marker = new MapPOIItem();
-		marker.setItemName("Default Marker");
+		marker.setItemName("이 위치로 지정");
 		marker.setTag(0);
 		marker.setMapPoint(currentPoint);
 		marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+		marker.setShowDisclosureButtonOnCalloutBalloon(false);
 //		marker.setMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
 		mMapView.addPOIItem(marker);
-		mMapView.setPOIItemEventListener(this);
+		mMapView.setPOIItemEventListener(new MapView.POIItemEventListener() {
+			
+			@Override
+			public void onPOIItemSelected(MapView arg0, MapPOIItem arg1) {
+				// TODO Auto-generated method stub
+				currentPoint = arg1.getMapPoint();
+				Toast.makeText(getActivity().getApplicationContext(), "selected", Toast.LENGTH_SHORT).show();
+			}
+			
+			@Override
+			public void onDraggablePOIItemMoved(MapView arg0, MapPOIItem arg1,
+					MapPoint arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onCalloutBalloonOfPOIItemTouched(MapView arg0, MapPOIItem arg1) {
+				// TODO Auto-generated method stub
+				currentPoint = arg1.getMapPoint();
+				Toast.makeText(getActivity().getApplicationContext(), "selected", Toast.LENGTH_SHORT).show();
+			}
+		});
 //		getActivity().getSupportFragmentManager().beginTransaction()
 //		.replace(R.id.client_container, mCallFragment).commit();
 		mParentActivity.setHaveToBack(true);
@@ -294,8 +328,11 @@ public class MapViewFragment extends Fragment implements MapViewEventListener,Ma
 	public void onMapViewSingleTapped(MapView arg0, MapPoint arg1) {
 		// TODO Auto-generated method stub
 		marker.setMapPoint(arg1);
+		marker.setItemName("이 위치로 지정");
 		mMapView.removeAllPOIItems();
 		mMapView.addPOIItem(marker);
+		mLocListener.setCurrentLocation(arg1.getMapPointGeoCoord().latitude, arg1.getMapPointGeoCoord().longitude);
+		Toast.makeText(getActivity().getApplicationContext(), "이 위치로 설정 되었습니다.", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -304,24 +341,24 @@ public class MapViewFragment extends Fragment implements MapViewEventListener,Ma
 		
 	}
 
-	@Override
-	public void onCalloutBalloonOfPOIItemTouched(MapView arg0, MapPOIItem arg1) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onDraggablePOIItemMoved(MapView arg0, MapPOIItem arg1,
-			MapPoint arg2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onPOIItemSelected(MapView arg0, MapPOIItem arg1) {
-		// TODO Auto-generated method stub
-		currentPoint = arg1.getMapPoint();
-		Toast.makeText(getActivity().getApplicationContext(), "selected", Toast.LENGTH_SHORT).show();
-	}
+//	@Override
+//	public void onCalloutBalloonOfPOIItemTouched(MapView arg0, MapPOIItem arg1) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void onDraggablePOIItemMoved(MapView arg0, MapPOIItem arg1,
+//			MapPoint arg2) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void onPOIItemSelected(MapView arg0, MapPOIItem arg1) {
+//		// TODO Auto-generated method stub
+//		currentPoint = arg1.getMapPoint();
+//		Toast.makeText(getActivity().getApplicationContext(), "selected", Toast.LENGTH_SHORT).show();
+//	}
 
 }

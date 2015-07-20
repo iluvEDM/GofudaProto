@@ -76,13 +76,13 @@ public class MainActivity extends ActionBarActivity{
 		mEditor = mPreference.edit();
 		CurrentClient = new Client();
 		CurrentTruck = new Truck();
-		if (mIsGoneToBackground) {
+		if (!mIsGoneToBackground) {
 			mMapView= new net.daum.mf.map.api.MapView(this);
-			mMapView.setDaumMapApiKey(API_KEY);
-			mMapView.setCurrentLocationTrackingMode(net.daum.mf.map.api.MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
-			mMapView.setShowCurrentLocationMarker(true);
+			
 		}
-		
+		mMapView.setDaumMapApiKey(API_KEY);
+		mMapView.setCurrentLocationTrackingMode(net.daum.mf.map.api.MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+		mMapView.setShowCurrentLocationMarker(true);
 //		mMapView.setCurrentLocationEventListener(this);
 		mServerManager = new ServerManager();
 		

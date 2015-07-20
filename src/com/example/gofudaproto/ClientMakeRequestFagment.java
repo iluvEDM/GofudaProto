@@ -5,6 +5,7 @@ import net.daum.mf.map.api.MapReverseGeoCoder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.gofudaproto.MapViewFragment.CurrentLocationChangedListner;
 import com.example.gofudaproto.server.ServerManager;
 import com.example.gofudaproto.server.ServerManager.OnServerManagerListener;
 
@@ -39,9 +40,10 @@ import android.widget.Toast;
  * instance of this fragment.
  *
  */
-public class ClientMakeRequestFagment extends android.support.v4.app.Fragment implements OnServerManagerListener{
+public class ClientMakeRequestFagment extends android.support.v4.app.Fragment implements OnServerManagerListener, CurrentLocationChangedListner{
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+	
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
 
@@ -143,7 +145,7 @@ public class ClientMakeRequestFagment extends android.support.v4.app.Fragment im
 		mSelectCurrentLocationButton = (Button)getActivity().findViewById(R.id.call_button_location_current);
 		mComeButton = (Button)getActivity().findViewById(R.id.call_button_come);
 //		mMenuLayout = (LinearLayout)getActivity().findViewById(R.id.callpaper_container);
-		
+		mMapFragment.setLocationListner(this);
 		mMenuSelectListener = new OnClickListener() {
 
 			@Override
@@ -353,6 +355,13 @@ public class ClientMakeRequestFagment extends android.support.v4.app.Fragment im
 	public void serverDidError(String error) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setCurrentLocation(double latitude, double longitude) {
+		// TODO Auto-generated method stub
+		mCurrentLatitude = latitude;
+		mCurrentLongitude = longitude;
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.example.gofudaproto;
 
+import net.daum.mf.map.api.MapPoint;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +54,7 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 	private TextView mUseTime;
 	private TextView mArrivalTime;
 	private TextView mClientName;
+	private String mPosition;
 	private Button mConfirmButton;
 	private MapViewFragment mMapFragment;
 	private boolean isGoSign = false;
@@ -99,6 +102,7 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 		mExtraRequirement.setText(etc);
 		mUseTime.setText(need_time);
 		mArrivalTime.setText(time);
+		mPosition = position;
 	}
 	public void setMenuNumbers(String count_string){
 		String sub = count_string.substring(1, count_string.length()-1);
@@ -129,10 +133,9 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				mMapFragment.isHaveToCurrentLocation = false;
 				mParentActivity.setBeforeContainer(R.id.call_contain);
 				makeThisFragmentToPrevFragment();
-				mMapFragment.isHaveToCurrentLocation = true;
+				mMapFragment.locationNeedToLoad = getMapPointFromString(mPosition);
 				getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.call_contain, mMapFragment).commit();
 				
 			}
@@ -147,6 +150,17 @@ public class TruckConfirmFragment extends android.support.v4.app.Fragment implem
 			}
 		});
 		sendGetRequestInformationCall();
+		
+	}
+	private MapPoint getMapPointFromString(String str){
+		String[] tokens = str.split(",");
+		String latitude = tokens[0];
+		String longitude = tokens[1];
+		double lat = Double.parseDouble(latitude);
+		double longi = Double.parseDouble(longitude);
+		MapPoint mp = MapPoint.mapPointWithGeoCoord(lat, longi);
+		
+		return mp;
 		
 	}
 	private void makeThisFragmentToPrevFragment(){
