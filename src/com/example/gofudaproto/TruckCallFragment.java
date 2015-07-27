@@ -3,6 +3,9 @@ package com.example.gofudaproto;
 
 import java.util.ArrayList;
 
+import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapReverseGeoCoder;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +55,7 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 		mContext = getActivity().getBaseContext();
 		mCallArray = new ArrayList<CallPaper>();
 		mCallThumbnailArray = new ArrayList<View>();
-		    
+		summaryPositionList = new ArrayList<String>();
 //		    listview.setAdapter(adapter);
 		mAdapter = new BaseAdapter() {
 			
@@ -165,7 +168,68 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 	private void getRequestPaperInformation(){
 //		mParentActivity.getServerManager().doSendCall(ServerManager.SHOW_REQUEST, param, this);
 	}
-
+	private MapPoint getMapPointFromString(String str){
+		String[] tokens = str.split(",");
+		String latitude = tokens[0];
+		String longitude = tokens[1];
+		double lat = Double.parseDouble(latitude);
+		double longi = Double.parseDouble(longitude);
+		MapPoint mp = MapPoint.mapPointWithGeoCoord(lat, longi);
+		
+		return mp;
+		
+	}
+	MapReverseGeoCoder reverseGeoCoder;
+	private String sum_position = "검색되지 않은 위치";
+	private ArrayList<String> summaryPositionList;
+	private int findIndex = 0;
+	private boolean isFindingAddress = false;
+	public void updateCallLocation(CallPaper cp){
+		MapPoint mp = getMapPointFromString(cp.getCallLocation());
+		
+		reverseGeoCoder = new MapReverseGeoCoder(mParentActivity.API_KEY, mp, new MapReverseGeoCoder.ReverseGeoCodingResultListener() {
+			
+			@Override
+			public void onReverseGeoCoderFoundAddress(MapReverseGeoCoder arg0,
+					String arg1) {
+				// TODO Auto-generated method stub
+				mCallArray.get(findIndex).setCallLocation(arg1);
+				CallThumbNailView ctv =  (CallThumbNailView)mCallThumbnailArray.get(findIndex);
+				ctv.setLocation(mCallArray.get(findIndex).getCallLocation());
+				findIndex++;
+				isFindingAddress = false;
+				mAdapter.notifyDataSetChanged();
+			}
+			
+			@Override
+			public void onReverseGeoCoderFailedToFindAddress(MapReverseGeoCoder arg0) {
+				// TODO Auto-generated method stub
+				mCallArray.get(findIndex).setCallLocation("검색되지 않은 위치");
+				CallThumbNailView ctv =  (CallThumbNailView)mCallThumbnailArray.get(findIndex);
+				ctv.setLocation(mCallArray.get(findIndex).getCallLocation());
+				findIndex++;
+				isFindingAddress = false;
+				mAdapter.notifyDataSetChanged();
+			}
+		}, mParentActivity);
+		reverseGeoCoder.startFindingAddress();
+		isFindingAddress = true;
+	}
+	public void updateThumbnailLocation(){
+		int counter = 0;
+		for(int i=0; i<mCallArray.size();i++){
+			updateCallLocation(mCallArray.get(i));
+//			while(isFindingAddress){
+//				counter++;
+//			}
+			
+		}
+//		for(int i=0; i<mCallArray.size();i++){
+//			CallThumbNailView ctv = (CallThumbNailView)mCallThumbnailArray.get(i);
+//			ctv.setLocation(summaryPositionList.get(i));
+//		}
+		
+	}
 	@Override
 	public void serverDidEnd(String result) {
 		// TODO Auto-generated method stub
@@ -182,10 +246,11 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 				
 				int request_id = jar.getInt(0);//jobj.getInt("request_id");
 				String name = jar.getString(1);//jobj.getString("name");
-				String etc = jar.getString(2);//jobj.getString("etc");
+				String position = jar.getString(2);//jobj.getString("etc");
+				
 				CallPaper cp = new CallPaper();
 				cp.setEventName(name);
-				cp.setCallLocation(etc);
+				cp.setCallLocation(position);
 				cp.setCallId(request_id);
 				mCallArray.add(cp);
 			}
@@ -200,7 +265,7 @@ public class TruckCallFragment extends Fragment implements   OnServerManagerList
 			tmpTNail.setLocation(mCallArray.get(i).getCallLocation());
 			mCallThumbnailArray.add(tmpTNail);
 		}
-		mAdapter.notifyDataSetChanged();
+		updateThumbnailLocation();
 		
 	}
 

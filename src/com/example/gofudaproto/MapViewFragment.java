@@ -3,8 +3,10 @@ package com.example.gofudaproto;
 import java.util.List;
 
 import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPOIItem.CalloutBalloonButtonType;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapPoint.GeoCoordinate;
+import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
 import net.daum.mf.map.api.MapView.MapViewEventListener;
 import net.daum.mf.map.api.MapView.POIItemEventListener;
@@ -122,6 +124,7 @@ public class MapViewFragment extends Fragment implements MapViewEventListener{
 			public void onPOIItemSelected(MapView arg0, MapPOIItem arg1) {
 				// TODO Auto-generated method stub
 				currentPoint = arg1.getMapPoint();
+				
 				Toast.makeText(getActivity().getApplicationContext(), "selected", Toast.LENGTH_SHORT).show();
 			}
 			
@@ -137,6 +140,13 @@ public class MapViewFragment extends Fragment implements MapViewEventListener{
 				// TODO Auto-generated method stub
 				currentPoint = arg1.getMapPoint();
 				Toast.makeText(getActivity().getApplicationContext(), "selected", Toast.LENGTH_SHORT).show();
+			}
+
+			@Override
+			public void onCalloutBalloonOfPOIItemTouched(MapView arg0,
+					MapPOIItem arg1, CalloutBalloonButtonType arg2) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 //		getActivity().getSupportFragmentManager().beginTransaction()
@@ -338,6 +348,21 @@ public class MapViewFragment extends Fragment implements MapViewEventListener{
 
 	@Override
 	public void onMapViewZoomLevelChanged(MapView arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onMapViewDragEnded(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onMapViewDragStarted(MapView arg0, MapPoint arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onMapViewMoveFinished(MapView arg0, MapPoint arg1) {
 		// TODO Auto-generated method stub
 		
 	}
