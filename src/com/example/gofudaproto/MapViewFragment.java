@@ -225,6 +225,7 @@ public class MapViewFragment extends Fragment implements MapViewEventListener{
 		MapPOIItem[] poiItems = mMapView.getPOIItems();
 		if (poiItems.length > 0) {
 			mMapView.selectPOIItem(poiItems[0], false);
+			mMapView.setMapCenterPoint(poiItems[0].getMapPoint(), true);
 		}
 	}
 

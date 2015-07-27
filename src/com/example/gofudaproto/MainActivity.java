@@ -353,6 +353,7 @@ public class MainActivity extends ActionBarActivity{
 		this.mPrevFragment = fragment;
 	}
 	public MapView getMapView(){
+		mMapView.setDaumMapApiKey(API_KEY);
 		return mMapView;
 	}
 	
